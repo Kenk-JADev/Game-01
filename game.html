@@ -7138,9 +7138,9 @@
 
                     if (cameraEl) {
                         cameraEl.style.transform = `translate(${-cameraX}px, ${-cameraY}px)`;
-                        document.documentElement.style.setProperty('--cam-x', cameraX + "px");
-                        document.documentElement.style.setProperty('--cam-y', cameraY + "px");
                     }
+                    document.documentElement.style.setProperty('--cam-x', cameraX + "px");
+                    document.documentElement.style.setProperty('--cam-y', cameraY + "px");
                     cameraAnimFrame = requestAnimationFrame(animateCamera);
                 }
 
@@ -7157,6 +7157,8 @@
                     cameraX = targetCameraX;
                     cameraY = targetCameraY;
                     if (cameraEl) cameraEl.style.transform = `translate(${-cameraX}px, ${-cameraY}px)`;
+                    document.documentElement.style.setProperty('--cam-x', cameraX + "px");
+                    document.documentElement.style.setProperty('--cam-y', cameraY + "px");
                 }
 
                 // ===== NAME CENSORSHIP =====
@@ -8140,7 +8142,7 @@
                     document.getElementById("levelup-display")?.classList.remove("visible");
                     document.getElementById("battle-transition-in")?.classList.remove("active");
                     // Reset effects
-                    document.getElementById("rpg-game-screen")?.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                    document.getElementById("rpg-viewport")?.classList.remove("effect-particles", "effect-dim", "effect-windows");
                     document.getElementById("battle-transition-out")?.classList.remove("active");
                     document.getElementById("cheat-console")?.classList.remove("visible");
                     document.getElementById("minimap-container")?.classList.remove("visible");
@@ -8385,7 +8387,7 @@
                     if (overlay && !overlay.classList.contains('open')) overlay.classList.add('open');
                     closeQuitOptions();
                     // Reset effects
-                    document.getElementById('rpg-game-screen')?.classList.remove('effect-particles', 'effect-dim', 'effect-windows');
+                    document.getElementById('rpg-viewport')?.classList.remove('effect-particles', 'effect-dim', 'effect-windows');
                 }
 
                 // Expose to global so inline onclick works
@@ -8724,13 +8726,13 @@
                     updatePlayerSprite();
 
                     // Map Effects
-                    const gameScreen = document.getElementById("rpg-game-screen");
-                    if (gameScreen) {
-                        gameScreen.classList.remove("effect-particles", "effect-dim", "effect-windows");
-                        if (mapId === "flur") gameScreen.classList.add("effect-particles");
-                        if (mapId === "boss_office") gameScreen.classList.add("effect-dim");
-                        if (mapId === "buero" || mapId === "zentrale") gameScreen.classList.add("effect-windows");
-                        if (mapId === "kantine") gameScreen.classList.add("effect-windows");
+                    const mapViewport = document.getElementById("rpg-viewport");
+                    if (mapViewport) {
+                        mapViewport.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                        if (mapId === "flur") mapViewport.classList.add("effect-particles");
+                        if (mapId === "boss_office") mapViewport.classList.add("effect-dim");
+                        if (mapId === "buero" || mapId === "zentrale") mapViewport.classList.add("effect-windows");
+                        if (mapId === "kantine") mapViewport.classList.add("effect-windows");
                     }
                     spawnNPCs();
                     snapCamera();
