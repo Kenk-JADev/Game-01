@@ -5835,12 +5835,14 @@
             background-image: radial-gradient(circle, rgba(255, 255, 255, 0.5) 1px, transparent 1.5px);
             background-size: 120px 120px;
             background-position: calc(var(--cam-x) * -0.5) calc(var(--cam-y) * -0.5);
+            animation: particleMove1 30s linear infinite;
         }
 
         .effect-particles::before {
             /* Layer 2: Kleine Partikel (langsamer) */
             background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
             background-size: 80px 80px;
+            animation: particleMove2 45s linear infinite;
             background-position: calc(var(--cam-x) * -0.2) calc(var(--cam-y) * -0.2);
         }
 
@@ -5912,6 +5914,14 @@
             }
         }
 
+        @keyframes particleMove1 {
+            0% { background-position: 0 0, calc(var(--cam-x) * -0.5) calc(var(--cam-y) * -0.5); }
+            100% { background-position: -120px -120px, calc(var(--cam-x) * -0.5) calc(var(--cam-y) * -0.5); }
+        }
+        @keyframes particleMove2 {
+            0% { background-position: 0 0, calc(var(--cam-x) * -0.2) calc(var(--cam-y) * -0.2); }
+            100% { background-position: -80px -80px, calc(var(--cam-x) * -0.2) calc(var(--cam-y) * -0.2); }
+        }
         @keyframes lightPulse {
             0% {
                 opacity: 0.4;
@@ -7406,9 +7416,6 @@
                         ],
                         chests: [{ x: 2, y: 16, type: "normal" }, { x: 17, y: 3, type: "rare" }],
                         npcs: [
-                            { x: 5, y: 8, type: "talk", sprite: "👨‍🦱", name: "Jannik", role: "Azubi Einkauf", dialog: ["Moin!", "Schicker Teppich."] },
-                            { x: 15, y: 8, type: "talk", sprite: "👩‍🦱", name: "Hamda", role: "Azubi Einkauf", dialog: ["Hi!", "Nicht verlaufen!"] },
-                            { x: 5, y: 12, type: "talk", sprite: "👩", name: "Deborha", role: "Azubi Einkauf", dialog: ["Kaffee?"] },
                             { x: 16, y: 10, type: "talk", sprite: "👨‍💼", name: "Andreas", role: "Verkauf", dialog: ["Guten Tag!"] },
                             { x: 5, y: 5, type: "enemy", sprite: "📞", name: "Telefonterror", enemyId: "telefon" },
                             { x: 15, y: 15, type: "enemy", sprite: "📧", name: "Spam-Mail", enemyId: "spam" },
@@ -8120,6 +8127,8 @@
                     document.getElementById("turn-indicator")?.classList.remove("active", "enemy-turn");
                     document.getElementById("levelup-display")?.classList.remove("visible");
                     document.getElementById("battle-transition-in")?.classList.remove("active");
+                    // Reset effects
+                    document.getElementById("rpg-game-window")?.classList.remove("effect-particles", "effect-dim", "effect-windows");
                     document.getElementById("battle-transition-out")?.classList.remove("active");
                     document.getElementById("cheat-console")?.classList.remove("visible");
                     document.getElementById("minimap-container")?.classList.remove("visible");
@@ -8339,6 +8348,8 @@
                     // ensure overlay open
                     if (overlay && !overlay.classList.contains('open')) overlay.classList.add('open');
                     closeQuitOptions();
+                    // Reset effects
+                    document.getElementById('rpg-game-window')?.classList.remove('effect-particles', 'effect-dim', 'effect-windows');
                 }
 
                 // Expose to global so inline onclick works
@@ -9213,6 +9224,8 @@
 
                         const portrait = document.getElementById("hud-portrait");
                         if (portrait) portrait.innerText = player.sprite;
+                        playerGender = data.gender || "m";
+                        playerDept = data.dept || "einkauf";
 
                         // Close any open menus and start transition when loading
                         if (gameState === "MENU") closeMenu();
