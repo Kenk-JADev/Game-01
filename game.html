@@ -5807,44 +5807,55 @@
             opacity: 0.9;
         }
 
-        /* High Quality Dynamic Map Effects */
+        /* High Quality Dynamic Map Effects System */
         :root {
             --cam-x: 0px;
             --cam-y: 0px;
+            --effect-opacity: 1;
         }
 
-        /* Flur: Schwebende Partikel (Staub/Dust) - Parallax */
+        /* Flur: Floating Particles (Dust) - Continuous Animation */
         .effect-particles::after,
         .effect-particles::before {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
             background-repeat: repeat;
             mix-blend-mode: screen;
-            opacity: 0.6;
+            opacity: var(--effect-opacity);
             pointer-events: none;
             z-index: 90;
-            will-change: background-position;
+            will-change: transform;
         }
 
         .effect-particles::after {
-            /* Layer 1: Große Partikel (schneller) */
-            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.5) 1px, transparent 1.5px);
+            /* Layer 1: Large particles (faster, floating up) */
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1.5px, transparent 2px);
             background-size: 120px 120px;
-            background-position: calc(var(--cam-x) * -0.5) calc(var(--cam-y) * -0.5);
+            animation: particlesFloat1 20s linear infinite;
         }
 
         .effect-particles::before {
-            /* Layer 2: Kleine Partikel (langsamer) */
-            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+            /* Layer 2: Small particles (slower, floating up) */
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.25) 1px, transparent 1.5px);
             background-size: 80px 80px;
-            background-position: calc(var(--cam-x) * -0.2) calc(var(--cam-y) * -0.2);
+            animation: particlesFloat2 30s linear infinite;
         }
 
-        /* Boss: Vignette + Dim */
+        @keyframes particlesFloat1 {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-120px) translateX(-60px); }
+        }
+
+        @keyframes particlesFloat2 {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-80px) translateX(40px); }
+        }
+
+        /* Boss: Vignette + Dim + Pulsing Spotlight */
         .effect-dim::after {
             content: "";
             position: absolute;
@@ -5856,9 +5867,10 @@
             mix-blend-mode: multiply;
             pointer-events: none;
             z-index: 90;
+            opacity: var(--effect-opacity);
         }
 
-        /* Spotlight Effect for Boss */
+        /* Spotlight Effect for Boss - Continuous Animation */
         .effect-dim::before {
             content: "";
             position: absolute;
@@ -5866,64 +5878,48 @@
             left: 40%;
             width: 20%;
             height: 30%;
-            background: radial-gradient(circle, rgba(255, 255, 200, 0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 200, 0.2) 0%, transparent 70%);
             pointer-events: none;
             z-index: 89;
             filter: blur(20px);
-            animation: lightPulse 5s ease-in-out infinite;
+            animation: spotlightPulse 4s ease-in-out infinite;
         }
 
-        /* Offices: Parallax God Rays */
+        @keyframes spotlightPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        /* Offices: God Rays - Continuous Animation */
         .effect-windows::after {
             content: "";
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
             background: repeating-linear-gradient(110deg,
                     transparent 0%,
                     transparent 8%,
-                    rgba(255, 255, 220, 0.08) 12%,
+                    rgba(255, 255, 220, 0.06) 12%,
                     transparent 16%);
-            background-position: calc(var(--cam-x) * -0.3) calc(var(--cam-y) * -0.3);
             pointer-events: none;
             z-index: 90;
             mix-blend-mode: overlay;
+            opacity: var(--effect-opacity);
+            animation: godRaysMove 25s linear infinite;
         }
 
-        @keyframes fogMove {
-            0% {
-                transform: translate(0, 0);
-            }
-
-            100% {
-                transform: translate(-100px, -50px);
-            }
+        @keyframes godRaysMove {
+            0% { transform: translateX(0) translateY(0) rotate(0deg); }
+            50% { transform: translateX(-50px) translateY(-30px) rotate(1deg); }
+            100% { transform: translateX(0) translateY(0) rotate(0deg); }
         }
 
-        @keyframes lightRayMove {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50px);
-            }
-        }
-
+        /* Light pulse for boss */
         @keyframes lightPulse {
-            0% {
-                opacity: 0.4;
-            }
-
-            50% {
-                opacity: 0.7;
-            }
-
-            100% {
-                opacity: 0.4;
-            }
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.7; }
         }
 
         /* Typewriter Spacing Fixes */
@@ -7406,9 +7402,7 @@
                         ],
                         chests: [{ x: 2, y: 16, type: "normal" }, { x: 17, y: 3, type: "rare" }],
                         npcs: [
-                            { x: 5, y: 8, type: "talk", sprite: "👨‍🦱", name: "Jannik", role: "Azubi Einkauf", dialog: ["Moin!", "Schicker Teppich."] },
                             { x: 15, y: 8, type: "talk", sprite: "👩‍🦱", name: "Hamda", role: "Azubi Einkauf", dialog: ["Hi!", "Nicht verlaufen!"] },
-                            { x: 5, y: 12, type: "talk", sprite: "👩", name: "Deborha", role: "Azubi Einkauf", dialog: ["Kaffee?"] },
                             { x: 16, y: 10, type: "talk", sprite: "👨‍💼", name: "Andreas", role: "Verkauf", dialog: ["Guten Tag!"] },
                             { x: 5, y: 5, type: "enemy", sprite: "📞", name: "Telefonterror", enemyId: "telefon" },
                             { x: 15, y: 15, type: "enemy", sprite: "📧", name: "Spam-Mail", enemyId: "spam" },
@@ -8085,9 +8079,53 @@
                     });
                 }
 
+
+                // ===== MAP EFFECTS SYSTEM =====
+                let currentEffectInterval = null;
+                let effectPhase = 0;
+
+                function resetMapEffects() {
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (gameWin) {
+                        gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                        gameWin.style.setProperty('--effect-opacity', '0');
+                    }
+                    effectPhase = 0;
+                }
+
+                function applyMapEffects(mapId) {
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (!gameWin) return;
+
+                    // First reset all effects
+                    resetMapEffects();
+
+                    // Small delay to allow CSS transition for smooth effect change
+                    setTimeout(() => {
+                        gameWin.style.setProperty('--effect-opacity', '1');
+                        
+                        // Apply appropriate effect for the map
+                        switch(mapId) {
+                            case "flur":
+                                gameWin.classList.add("effect-particles");
+                                break;
+                            case "boss_office":
+                                gameWin.classList.add("effect-dim");
+                                break;
+                            case "buero":
+                            case "zentrale":
+                            case "kantine":
+                                gameWin.classList.add("effect-windows");
+                                break;
+                        }
+                    }, 50);
+                }
+
+                // ===== END MAP EFFECTS SYSTEM =====
                 // ===== RESET FUNCTION =====
                 function resetGame() {
                     stopCameraLoop();
+                    resetMapEffects(); // Reset map effects
                     gameState = "SPLASH";
                     player = {
                         name: "Held", x: 5, y: 7, hp: 100, maxHp: 100, mp: 10, maxMp: 10,
@@ -8242,6 +8280,7 @@
                 function startNewGame() {
                     // Reset state so no previous name/signature persists
                     resetGame();
+                    resetMapEffects(); // Ensure effects are reset at game start
                     startMapTransition();
                     setTimeout(() => {
                         showScreen("rpg-name-screen");
@@ -8334,6 +8373,7 @@
                 function goToTitleFromMenu() {
                     // Close menu and show title screen
                     closeMenu();
+                    resetMapEffects(); // Reset effects when going to title
                     showScreen('rpg-title-screen');
                     gameState = 'TITLE';
                     // ensure overlay open
@@ -8676,15 +8716,8 @@
                     spawnDoors();
                     updatePlayerSprite();
 
-                    // Map Effects
-                    const gameWin = document.getElementById("rpg-game-window");
-                    if (gameWin) {
-                        gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
-                        if (mapId === "flur") gameWin.classList.add("effect-particles");
-                        if (mapId === "boss_office") gameWin.classList.add("effect-dim");
-                        if (mapId === "buero" || mapId === "zentrale") gameWin.classList.add("effect-windows");
-                        if (mapId === "kantine") gameWin.classList.add("effect-windows");
-                    }
+                    // Map Effects - Apply based on map type
+                    applyMapEffects(mapId);
                     spawnNPCs();
                     snapCamera();
                     updateMinimap();
