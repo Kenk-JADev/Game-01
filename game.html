@@ -8462,8 +8462,18 @@
                                 sigEls.forEach(el => el.innerText = "");
                                 // helper to return a Promise wrapping typewriteText
                                 const promises = Array.from(sigEls).map(el => typewriteTextPromise(el, field.text, field.speed || 60));
-                                // scroll to first signature element
-                                setTimeout(() => { sigEls[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
+                                // Scroll smooth zur Signatur innerhalb des contract-paper Containers
+                                setTimeout(() => {
+                                    const paper = document.querySelector('.contract-paper');
+                                    const sigEl = sigEls[0];
+                                    if (paper && sigEl) {
+                                        const paperRect = paper.getBoundingClientRect();
+                                        const sigRect = sigEl.getBoundingClientRect();
+                                        const relativeTop = sigRect.top - paperRect.top + paper.scrollTop;
+                                        const targetScroll = relativeTop - (paperRect.height * 0.3);
+                                        paper.scrollTo({ top: Math.max(0, targetScroll), behavior: 'smooth' });
+                                    }
+                                }, 50);
                                 Promise.all(promises).then(() => {
                                     currentIndex++;
                                     setTimeout(typeNextField, 200);
@@ -8481,7 +8491,16 @@
 
                             // Scroll zum Element damit man sieht wenn getippt wird
                             setTimeout(() => {
-                                if (element) element.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                                if (element) {
+                                    const paper = document.querySelector('.contract-paper');
+                                    if (paper) {
+                                        const paperRect = paper.getBoundingClientRect();
+                                        const elRect = element.getBoundingClientRect();
+                                        const relativeTop = elRect.top - paperRect.top + paper.scrollTop;
+                                        const targetScroll = relativeTop - (paperRect.height * 0.3);
+                                        paper.scrollTo({ top: Math.max(0, targetScroll), behavior: 'smooth' });
+                                    }
+                                }
                             }, 50);
                         } else {
                             currentIndex++;
