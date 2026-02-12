@@ -9224,6 +9224,8 @@
 
                         const portrait = document.getElementById("hud-portrait");
                         if (portrait) portrait.innerText = player.sprite;
+                        playerGender = data.gender || "m";
+                        playerDept = data.dept || "einkauf";
 
                         // Close any open menus and start transition when loading
                         if (gameState === "MENU") closeMenu();
