@@ -163,18 +163,6 @@
                         <button class="changelog-close" id="changelog-close">✕</button>
                     </div>
                     <div class="changelog-body">
-                                                <div class="changelog-version">
-                            <h3>Version 4.0.2 - Save/Load Fix</h3>
-                            <div class="changelog-date">Februar 2026</div>
-                            <ul>
-                                <li>🐛 Speichersystem komplett überarbeitet: Name, Geschlecht, Items, Abteilung und Ort werden nun korrekt gespeichert</li>
-                                <li>🐛 Laden-Funktion verbessert: Alle Spieler-Daten (Name, Sprite, Gender, Department) werden vollständig wiederhergestellt</li>
-                                <li>🐛 "Fortfahren"-Button im Titelmenü stellt nun alle Charaktereigenschaften korrekt wieder her</li>
-                                <li>🐛 Speicherdaten enthalten jetzt gender und dept direkt im player-Objekt</li>
-                                <li>🐛 UI-Elemente (HUD, Menü, Battle-Screen) zeigen nach dem Laden die korrekten Werte an</li>
-                                <li>💾 "Neues Spiel" überschreibt bestehende Saves nicht mehr vor Vertragsunterzeichnung</li>
-                            </ul>
-                        </div>
                         <div class="changelog-version">
                             <h3>Version 4.0 - Ultimate Edition</h3>
                             <div class="changelog-date">Februar 2026</div>
@@ -8279,48 +8267,24 @@
                     const save = getSaveFile();
                     if (!save) return;
 
-                    // Restore gender and department first
-                    playerGender = save.gender || "m";
-                    playerDept = save.dept || "einkauf";
-                    
-                    // Restore player object with all properties
+                    playerGender = save.gender;
+                    playerDept = save.dept;
                     player = save.player || {};
+                    // Ensure player.name is present (some saves store name separately)
                     player.name = save.name || player.name || "Held";
-                    
-                    // Ensure player has gender, dept, and sprite
-                    player.gender = playerGender;
-                    player.dept = playerDept;
-                    player.sprite = player.sprite || GENDER_SPRITES[playerGender];
-                    
-                    // Restore location
-                    currentMapId = save.currentMapId || "buero";
-                    
-                    // Restore game progress
-                    defeatedEnemies = new Set(save.defeatedEnemies || []);
-                    openedChests = new Set(save.openedChests || []);
-                    metNPCs = save.metNPCs || [];
-                    battleCount = save.battleCount || 0;
-                    chestCount = save.chestCount || 0;
+                    currentMapId = save.currentMapId;
 
-                    // Update ALL visible name/sprite fields immediately
+                    // Ensure sprite and basic fields
+                    player.sprite = player.sprite || GENDER_SPRITES[playerGender];
+
+                    // Update visible name/sprite fields immediately
                     const _upd = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
                     _upd("hud-player-name", player.name);
                     _upd("player-sprite-name", player.name);
                     _upd("battle-player-name", player.name);
                     _upd("menu-player-name", player.name);
-                    _upd("vs-player-name", player.name);
-                    
                     _upd("hud-portrait", player.sprite);
                     _upd("menu-portrait", player.sprite);
-                    _upd("battle-portrait", player.sprite);
-                    _upd("vs-player-sprite", player.sprite);
-                    
-                    const spriteBody = document.querySelector("#rpg-player .sprite-body");
-                    if (spriteBody) spriteBody.innerText = player.sprite;
-                    
-                    const battlePortrait = document.querySelector(".player-portrait-battle");
-                    if (battlePortrait) battlePortrait.innerText = player.sprite;
-                    
                     _upd("menu-player-title", GENDER_TITLES[playerGender] + " - " + DEPT_NAMES[playerDept]);
 
                     if (mapTrans) {
@@ -9209,12 +9173,8 @@
 
                 // ===== SAVE/LOAD =====
                 window.saveGame = function () {
-                    // Ensure player object has the latest gender and dept
-                    player.gender = playerGender;
-                    player.dept = playerDept;
-                    
                     const saveData = {
-                        version: "4.0.2",
+                        version: "4.0.1",
                         // Top-level metadata for compatibility with older save readers
                         name: player.name,
                         gender: playerGender,
@@ -9246,49 +9206,26 @@
                     try {
                         const data = JSON.parse(saved);
                         console.log("[BüroVersum] Loaded save:", data);
-                        
-                        // Restore player object with all properties
                         player = data.player || {};
+                        // If the save kept a top-level name, ensure player.name is set
                         player.name = player.name || data.name || "Held";
-                        
-                        // Restore gender and department
-                        playerGender = data.gender || player.gender || "m";
-                        playerDept = data.dept || player.dept || "einkauf";
-                        
-                        // Ensure player sprite is correct
-                        player.sprite = player.sprite || GENDER_SPRITES[playerGender];
-                        player.gender = playerGender;
-                        player.dept = playerDept;
-                        
-                        // Restore game state
                         defeatedEnemies = new Set(data.defeatedEnemies || []);
                         openedChests = new Set(data.openedChests || []);
                         metNPCs = data.metNPCs || [];
                         battleCount = data.battleCount || 0;
                         chestCount = data.chestCount || 0;
 
-                        // Update ALL UI elements with correct name and sprite
                         const update = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
                         update("hud-player-name", player.name);
                         update("player-sprite-name", player.name);
-                        update("battle-player-name", player.name);
-                        update("menu-player-name", player.name);
-                        update("vs-player-name", player.name);
-                        
-                        // Update sprites everywhere
-                        update("hud-portrait", player.sprite);
-                        update("menu-portrait", player.sprite);
-                        update("battle-portrait", player.sprite);
-                        update("vs-player-sprite", player.sprite);
-                        
+
                         const spriteBody = document.querySelector("#rpg-player .sprite-body");
                         if (spriteBody) spriteBody.innerText = player.sprite;
-                        
-                        const battlePortrait = document.querySelector(".player-portrait-battle");
-                        if (battlePortrait) battlePortrait.innerText = player.sprite;
-                        
-                        // Update player title in menu
-                        update("menu-player-title", GENDER_TITLES[playerGender] + " - " + DEPT_NAMES[playerDept]);
+
+                        const portrait = document.getElementById("hud-portrait");
+                        if (portrait) portrait.innerText = player.sprite;
+                        playerGender = data.gender || "m";
+                        playerDept = data.dept || "einkauf";
 
                         // Close any open menus and start transition when loading
                         if (gameState === "MENU") closeMenu();
