@@ -7406,9 +7406,9 @@
                         ],
                         chests: [{ x: 2, y: 16, type: "normal" }, { x: 17, y: 3, type: "rare" }],
                         npcs: [
-                            { x: 5, y: 8, type: "talk", sprite: "👨‍🦱", name: "Jannik", role: "Azubi Einkauf", dialog: ["Moin!", "Schicker Teppich."] },
-                            { x: 15, y: 8, type: "talk", sprite: "👩‍🦱", name: "Hamda", role: "Azubi Einkauf", dialog: ["Hi!", "Nicht verlaufen!"] },
-                            { x: 5, y: 12, type: "talk", sprite: "👩", name: "Deborha", role: "Azubi Einkauf", dialog: ["Kaffee?"] },
+
+
+
                             { x: 16, y: 10, type: "talk", sprite: "👨‍💼", name: "Andreas", role: "Verkauf", dialog: ["Guten Tag!"] },
                             { x: 5, y: 5, type: "enemy", sprite: "📞", name: "Telefonterror", enemyId: "telefon" },
                             { x: 15, y: 15, type: "enemy", sprite: "📧", name: "Spam-Mail", enemyId: "spam" },
@@ -8152,6 +8152,10 @@
 
                     cameraX = 0; cameraY = 0; targetCameraX = 0; targetCameraY = 0;
                     if (cameraEl) cameraEl.style.transform = "";
+                    
+                    // Reset map effect CSS variables
+                    document.documentElement.style.setProperty('--cam-x', '0px');
+                    document.documentElement.style.setProperty('--cam-y', '0px');
 
                     showScreen(null);
                 }
@@ -8224,6 +8228,14 @@
                         showScreen("rpg-title-screen");
                         gameState = "TITLE";
                         updateTitleMenu();
+                        
+                        // Reset map effects when going to title screen
+                        const gameWin = document.getElementById("rpg-game-window");
+                        if (gameWin) {
+                            gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                        }
+                        document.documentElement.style.setProperty('--cam-x', '0px');
+                        document.documentElement.style.setProperty('--cam-y', '0px');
                     }, 500);
                 }
 
@@ -8339,6 +8351,14 @@
                     // ensure overlay open
                     if (overlay && !overlay.classList.contains('open')) overlay.classList.add('open');
                     closeQuitOptions();
+                    
+                    // Reset map effects when going to title screen
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (gameWin) {
+                        gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                    }
+                    document.documentElement.style.setProperty('--cam-x', '0px');
+                    document.documentElement.style.setProperty('--cam-y', '0px');
                 }
 
                 // Expose to global so inline onclick works
@@ -8981,6 +9001,15 @@
                     if (gameState !== "MAP") return;
                     gameState = "MENU";
                     showScreen("rpg-menu-screen");
+                    
+                    // Reset map effects when opening menu
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (gameWin) {
+                        gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                    }
+                    document.documentElement.style.setProperty('--cam-x', '0px');
+                    document.documentElement.style.setProperty('--cam-y', '0px');
+                    
                     updateMenuStats();
                     updateTeamTab();
                     updateWorldMapTab();
@@ -9358,6 +9387,14 @@
 
                         updateBattleUI();
                         parseEmojis(document.getElementById("rpg-battle-screen"));
+                        
+                        // Reset map effects when entering battle
+                        const gameWin = document.getElementById("rpg-game-window");
+                        if (gameWin) {
+                            gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                        }
+                        document.documentElement.style.setProperty('--cam-x', '0px');
+                        document.documentElement.style.setProperty('--cam-y', '0px');
                     }, 700);
 
                     setTimeout(() => {
