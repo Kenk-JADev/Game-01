@@ -8463,7 +8463,7 @@
                                 // helper to return a Promise wrapping typewriteText
                                 const promises = Array.from(sigEls).map(el => typewriteTextPromise(el, field.text, field.speed || 60));
                                 // scroll to first signature element
-                                setTimeout(() => { sigEls[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 50);
+                                setTimeout(() => { sigEls[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
                                 Promise.all(promises).then(() => {
                                     currentIndex++;
                                     setTimeout(typeNextField, 200);
