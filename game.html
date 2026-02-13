@@ -5283,6 +5283,18 @@
         #rpg-ending-screen {
             justify-content: center;
             align-items: center;
+            padding: 24px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        #rpg-ending-screen.active .ending-content {
+            animation: endingIntro 0.8s ease-out both;
+        }
+
+        @keyframes endingIntro {
+            0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .ending-bg {
@@ -5401,6 +5413,10 @@
             z-index: 10;
             text-align: center;
             padding: 20px;
+            width: min(720px, 100%);
+            max-height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
         }
 
         .ending-trophy-container {
@@ -5410,7 +5426,7 @@
         }
 
         .ending-trophy {
-            font-size: 7rem;
+            font-size: clamp(4.5rem, 12vw, 7rem);
             animation: trophyFloat 3s infinite ease-in-out, trophyGlow 2s infinite alternate;
             position: relative;
             z-index: 2;
@@ -7550,17 +7566,20 @@
                             },
                             {
                                 x: 10, y: 2, type: "talk", sprite: "👨‍🦱", name: "Jannik", role: "Azubi Einkauf",
-                                dialog: ["Moin! Ich bin Jannik.", "Im Einkauf geht's oft um Timing.", "Hol dir was für Angriff oder Max-HP!"],
+                                dialog: ["Moin! Ich bin Jannik.", "Im Einkauf geht's oft um Timing.", "Wenn du schnell genug bist, bleibt dir Stress erspart.", "Hol dir was für Angriff oder Max-HP – das hilft unterwegs!"],
+                                choiceId: "jannik_tip", choicePrompt: "Brauchst du einen Tipp aus dem Einkauf?",
                                 wander: true
                             },
                             {
-                                x: 17, y: 2, type: "talk", sprite: "👩‍🦱", name: "Hamda", role: "Azubi Einkauf",
-                                dialog: ["Hi! Hamda hier.", "Orientier dich an den Türen (🚪).", "Du schaffst das! 💪"],
+                                x: 17, y: 2, type: "talk", sprite: "👨‍🦱", name: "Hamda", role: "Azubi Einkauf",
+                                dialog: ["Hi! Hamda hier.", "Ich halte heute das Chaos zusammen.", "Orientier dich an den Türen (🚪) und den Teppichen.", "Du schaffst das! 💪"],
+                                choiceId: "hamda_chat", choicePrompt: "Kurz Zeit für einen Hinweis?",
                                 wander: true
                             },
                             {
                                 x: 3, y: 9, type: "talk", sprite: "👩", name: "Deborha", role: "Azubi Einkauf",
-                                dialog: ["Hey! Deborha hier.", "Kaffee ist quasi eine Superkraft. ☕"],
+                                dialog: ["Hey! Deborha hier.", "Kaffee ist quasi eine Superkraft. ☕", "Wenn du müde wirst, gönn dir eine Pause."],
+                                choiceId: "deborha_coffee", choicePrompt: "Kaffee-Frage gefällig?",
                                 wander: true
                             },
                             {
@@ -7639,6 +7658,8 @@
                         chests: [{ x: 2, y: 16, type: "normal" }, { x: 17, y: 3, type: "rare" }],
                         npcs: [
                             { x: 16, y: 10, type: "talk", sprite: "👨‍💼", name: "Andreas", role: "Verkauf", dialog: ["Guten Tag!"], choiceId: "andreas_quest", choicePrompt: "Ich suche etwas...", wander: true },
+                            { x: 8, y: 12, type: "talk", sprite: "👩‍💼", name: "Emmely", role: "Verwaltung", dialog: ["Hallo! Ich bin Emmely.", "Der Hauptflur ist heute richtig lebendig."], wander: true },
+                            { x: 11, y: 12, type: "talk", sprite: "👨‍💼", name: "Alexander", role: "IT", dialog: ["Hi, Alexander hier.", "Ich checke nur kurz die Leitungen."], wander: true },
                             { x: 5, y: 5, type: "enemy", sprite: "📞", name: "Telefonterror", enemyId: "telefon", wander: true },
                             { x: 15, y: 15, type: "enemy", sprite: "📧", name: "Spam-Mail", enemyId: "spam" },
                             { x: 15, y: 5, type: "enemy", sprite: "📉", name: "Excel-Fehler", enemyId: "excel" },
@@ -9160,6 +9181,12 @@
                         queueMessage(npc.choicePrompt || "Kann ich dir helfen?", npc.name, npc.sprite, () => openJustinChoice(npc));
                     } else if (npc.choiceId === "sertac_coffee") {
                         queueMessage(npc.choicePrompt || "Holst du mir Kaffee?", npc.name, npc.sprite, () => openSertacChoice(npc));
+                    } else if (npc.choiceId === "jannik_tip") {
+                        queueMessage(npc.choicePrompt || "Brauchst du einen Tipp aus dem Einkauf?", npc.name, npc.sprite, () => openJannikChoice(npc));
+                    } else if (npc.choiceId === "hamda_chat") {
+                        queueMessage(npc.choicePrompt || "Kurz Zeit für einen Hinweis?", npc.name, npc.sprite, () => openHamdaChoice(npc));
+                    } else if (npc.choiceId === "deborha_coffee") {
+                        queueMessage(npc.choicePrompt || "Kaffee-Frage gefällig?", npc.name, npc.sprite, () => openDeborhaChoice(npc));
                     } else if (npc.choiceId === "andreas_quest") {
                         queueMessage(npc.choicePrompt || "Ich suche etwas...", npc.name, npc.sprite, () => openAndreasChoice(npc));
                     }
@@ -9202,6 +9229,57 @@
                             return;
                         }
                         showMessage("Schon gut, vergiss es...", npc.name, npc.sprite);
+                    });
+                }
+
+                function openJannikChoice(npc) {
+                    if (typeof window.showChoice !== "function") return;
+                    window.showChoice("Womit kann ich helfen?", [
+                        { label: "Einkauf-Tipp", value: "tip", hint: "🧾" },
+                        { label: "Was nervt dich?", value: "stress", hint: "😅" },
+                        { label: "Alles gut", value: "ok", hint: "✅" }
+                    ], npc.name, npc.sprite, (val) => {
+                        if (val === "tip") {
+                            showMessage("Achte auf die Teppichwege – die führen dich schnell zu den Türen.", npc.name, npc.sprite);
+                        } else if (val === "stress") {
+                            showMessage("Am meisten nervt mich, wenn Lieferungen trödeln. Tempo ist alles!", npc.name, npc.sprite);
+                        } else {
+                            showMessage("Alles klar. Dann packen wir's an!", npc.name, npc.sprite);
+                        }
+                    });
+                }
+
+                function openHamdaChoice(npc) {
+                    if (typeof window.showChoice !== "function") return;
+                    window.showChoice("Was brauchst du gerade?", [
+                        { label: "Wegbeschreibung", value: "route", hint: "🗺️" },
+                        { label: "Was machst du hier?", value: "job", hint: "🧰" },
+                        { label: "Später", value: "later", hint: "⏳" }
+                    ], npc.name, npc.sprite, (val) => {
+                        if (val === "route") {
+                            showMessage("Folge dem Teppichkreuz im Flur – das bringt dich zu allen Abteilungen.", npc.name, npc.sprite);
+                        } else if (val === "job") {
+                            showMessage("Ich halte den Einkauf am Laufen und schaue, dass nichts liegen bleibt.", npc.name, npc.sprite);
+                        } else {
+                            showMessage("Kein Stress, ich bin hier, wenn du mich brauchst.", npc.name, npc.sprite);
+                        }
+                    });
+                }
+
+                function openDeborhaChoice(npc) {
+                    if (typeof window.showChoice !== "function") return;
+                    window.showChoice("Lust auf einen Kaffee-Tipp?", [
+                        { label: "Kaffee-Tipp", value: "coffee", hint: "☕" },
+                        { label: "Lieber Tee", value: "tea", hint: "🍵" },
+                        { label: "Nein danke", value: "no", hint: "✖" }
+                    ], npc.name, npc.sprite, (val) => {
+                        if (val === "coffee") {
+                            showMessage("Kleiner Trick: Erst Wasser, dann Kaffee – das hält länger wach!", npc.name, npc.sprite);
+                        } else if (val === "tea") {
+                            showMessage("Tee geht auch. Hauptsache, du bleibst fokussiert!", npc.name, npc.sprite);
+                        } else {
+                            showMessage("Alles klar, dann ohne Koffein. 😉", npc.name, npc.sprite);
+                        }
                     });
                 }
 
@@ -9987,6 +10065,11 @@
                     update("vs-enemy-sprite", currentEnemy.sprite);
                     update("vs-player-sprite", player.sprite);
 
+                    const vsMessageText = currentEnemy.vsMessage || "";
+                    const extraVsDelay = Math.min(2000, Math.max(0, vsMessageText.length - 60) * 25);
+                    const vsSplashDuration = 2600 + extraVsDelay;
+                    const battleIntroDuration = 2700 + extraVsDelay;
+
                     // ===== BATTLE PANELS SEQUENCE =====
                     // 0ms: Panels start opening
                     const battlePanels = document.getElementById("battle-panels");
@@ -10042,7 +10125,10 @@
                                     bossBanner.style.display = "none";
                                 }
                                 
-                                if (vsSplash) vsSplash.classList.add("active");
+                                if (vsSplash) {
+                                    vsSplash.style.animationDuration = `${vsSplashDuration / 1000}s`;
+                                    vsSplash.classList.add("active");
+                                }
                                 if (mapTrans) {
                                     mapTrans.classList.remove("active", "opening");
                                 }
@@ -10086,7 +10172,7 @@
                         }
 
                         setTimeout(() => showTurn("Dein Zug!", true), 300);
-                    }, 2700);
+                    }, battleIntroDuration);
                 }
 
                 function updateBattleUI() {
