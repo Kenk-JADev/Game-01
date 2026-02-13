@@ -10295,11 +10295,17 @@
                         if (transOut) transOut.classList.remove("active");
                         isTransitioning = false;
 
-                        if ((msgBox && msgBox.classList.contains("visible")) || msgQueue.length > 0 || isTyping) {
-                            gameState = "MESSAGE";
-                        } else {
-                            gameState = "MAP";
-                        }
+                        // Reset message system for fresh start
+                        msgLocked = false;
+                        isTyping = false;
+                        fullText = "";
+                        typeIndex = 0;
+                        if (typeTimer) clearTimeout(typeTimer);
+                        typeTimer = null;
+                        // Force close any existing message box
+                        if (msgBox) msgBox.classList.remove("visible");
+
+                        gameState = "MAP";
 
                         checkNearbyInteractables();
                         if (typeof after === "function") after();
