@@ -8694,7 +8694,7 @@
                 if (nameInput) {
                     nameInput.addEventListener("input", () => {
                         const val = nameInput.value.trim();
-                        if (previewName) previewName.innerText = val || "HELD";
+                        if (previewName) previewName.textContent = val || "HELD";
                         const validation = validateName(val);
                         if (nameError) nameError.innerText = (val.length > 0 && !validation.valid) ? validation.error : "";
                     });
@@ -8792,7 +8792,7 @@
                         }
 
                         if (element) {
-                            element.innerText = "";
+                            element.textContent = "";
                             typewriteText(element, field.text, field.speed || 30, () => {
                                 currentIndex++;
                                 setTimeout(typeNextField, 200);
@@ -8822,11 +8822,11 @@
 
                 function typewriteText(element, text, speed = 50, callback) {
                     let currentChar = 0;
-                    element.innerText = "";
+                    element.textContent = "";
 
                     function type() {
                         if (currentChar < text.length) {
-                            element.innerText += text[currentChar];
+                            element.textContent += text[currentChar];
                             currentChar++;
                             setTimeout(type, speed);
                         } else {
