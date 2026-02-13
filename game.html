@@ -10621,12 +10621,12 @@
 
                     endBattleToMap(() => {
                         const revived = reviveEnemiesOnDeath(3, ["buero", "flur", "zentrale"]);
-                        loadMap("buero", false);
+                        loadMap("buero", true);
 
                         setTimeout(() => {
                             showMessage("Du wachst im Büro auf... (-20 Gold)", "📋 System", "📋");
                             if (revived > 0) queueMessage(`⚠️ ${revived} Gegner sind wieder aufgetaucht...`, "📋 System", "📋");
-                        }, 1500);
+                        }, 1600);
                     });
                 };
 
