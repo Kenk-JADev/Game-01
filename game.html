@@ -59,7 +59,7 @@
                     <span class="title-letter" style="--i:9">m</span>
                 </h1>
                 <div class="splash-subtitle">— R O L E P L A Y I N G G A M E —</div>
-                <div class="splash-version">v4.0 Ultimate Edition</div>
+                <div class="splash-version">v4.0.2 Ultimate Edition</div>
                 <div class="splash-credits">Entwickelt von Justin</div>
                 <div class="splash-loader-container">
                     <div class="splash-loader-bar"></div>
@@ -125,7 +125,7 @@
                         <div class="title-logo">
                             <div class="title-icon">🏢</div>
                             <h1>BüroVersum</h1>
-                            <p>RPG Ultimate Edition</p>
+                            <p>Mache dich als Mitarbeiter bereit!</p>
                         </div>
                         <div class="title-buttons">
                             <button class="title-btn" id="title-new-game">
@@ -3944,7 +3944,7 @@
 
         .vs-message {
             position: absolute;
-            bottom: 160px;
+            bottom: 150px;
             left: 50%;
             transform: translateX(-50%);
             font-family: 'VT323', monospace;
@@ -3954,13 +3954,13 @@
             padding: 12px 24px;
             border: 2px solid #f8f;
             border-radius: 8px;
-            animation: vMessagePop 0.5s 0.8s both;
+            animation: vMessagePop 0.5s 0.3s both;
             text-shadow: 0 0 10px #f8f;
             max-width: 80%;
             text-align: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.4s;
+            transition: opacity 0.2s;
         }
 
         #battle-vs-splash.active .vs-message {
@@ -7218,26 +7218,26 @@
 
                 // ===== ENEMIES =====
                 const ENEMIES = {
-                    telefon: { name: "Telefonterrorist", sprite: "📞", hp: 40, atk: 8, def: 2, gold: 25, exp: 15, vsMessage: "Klingeln nerven!" },
-                    spam: { name: "Spam-Mail-Flut", sprite: "📧", hp: 35, atk: 7, def: 1, gold: 20, exp: 12, vsMessage: "Zu viele Mails!" },
-                    drucker: { name: "Drucker-Dämon", sprite: "🖨️", hp: 55, atk: 12, def: 3, gold: 35, exp: 20, vsMessage: "Papier-Chaos!" },
-                    kaffee: { name: "Kaffee-Gremlin", sprite: "☕", hp: 45, atk: 9, def: 2, gold: 25, exp: 15, vsMessage: "Zu stark!" },
-                    meeting: { name: "Meeting-Monster", sprite: "📊", hp: 70, atk: 15, def: 4, gold: 45, exp: 28, vsMessage: "Hätte Email sein können..." },
-                    handy: { name: "Handy-Sucht", sprite: "📱", hp: 50, atk: 11, def: 2, gold: 30, exp: 18, vsMessage: "Zu abhängig!" },
-                    notification: { name: "Benachrichtigungs-Spam", sprite: "🔔", hp: 45, atk: 10, def: 2, gold: 28, exp: 16, vsMessage: "Zu viele Alerts!" },
-                    excel: { name: "Excel-Fehler", sprite: "📉", hp: 60, atk: 14, def: 3, gold: 40, exp: 25, vsMessage: "Funktioniert nicht!" },
-                    deadline: { name: "Deadline-Stress", sprite: "⏰", hp: 75, atk: 18, def: 4, gold: 55, exp: 35, vsMessage: "Läuft mir davon!" },
-                    bug: { name: "Software-Bug", sprite: "🐛", hp: 50, atk: 12, def: 2, gold: 32, exp: 22, vsMessage: "Wer baut das ein?" },
-                    password: { name: "Passwort-Vergessen", sprite: "🔐", hp: 40, atk: 8, def: 5, gold: 28, exp: 18, vsMessage: "Wieder..!" },
-                    update: { name: "Windows-Update", sprite: "🔄", hp: 80, atk: 10, def: 6, gold: 50, exp: 30, vsMessage: "Jetzt schon wieder!" },
-                    wifi: { name: "WLAN-Ausfall", sprite: "📶", hp: 55, atk: 13, def: 3, gold: 38, exp: 24, vsMessage: "Verbindung weg!" },
-                    kunde: { name: "Schwieriger Kunde", sprite: "😤", hp: 65, atk: 16, def: 3, gold: 45, exp: 28, vsMessage: "Der ist sauer!" },
-                    praktikant: { name: "Verwirrter Praktikant", sprite: "🤷", hp: 30, atk: 5, def: 1, gold: 15, exp: 10, vsMessage: "Was mache ich jetzt?" },
-                    kantine: { name: "Kantinen-Essen", sprite: "🍲", hp: 45, atk: 20, def: 1, gold: 25, exp: 15, vsMessage: "Und das ist Essen?" },
-                    feueralarm: { name: "Fehlalarm", sprite: "🚨", hp: 90, atk: 8, def: 8, gold: 60, exp: 40, vsMessage: "Wieder Falschalarm!" },
+                    telefon: { name: "Telefonterrorist", sprite: "📞", hp: 40, atk: 8, def: 2, gold: 25, exp: 15, vsMessage: "Klingel Klingel! Gehe jetzt dran." },
+                    spam: { name: "Spam-Mail-Flut", sprite: "📧", hp: 35, atk: 7, def: 1, gold: 20, exp: 12, vsMessage: "Du hast sehr viele Spam-Mails drauf!" },
+                    drucker: { name: "Drucker-Dämon", sprite: "🖨️", hp: 55, atk: 12, def: 3, gold: 35, exp: 20, vsMessage: "Drucken wir noch mehr Papier aus, Okay?" },
+                    kaffee: { name: "Kaffee-Gremlin", sprite: "☕", hp: 45, atk: 9, def: 2, gold: 25, exp: 15, vsMessage: "Komm! Ich bin doch ein leckerer Kaffee!" },
+                    meeting: { name: "Meeting-Monster", sprite: "📊", hp: 70, atk: 15, def: 4, gold: 45, exp: 28, vsMessage: "So leute, was haben wir zu Besprechen?" },
+                    handy: { name: "Handy-Sucht", sprite: "📱", hp: 50, atk: 11, def: 2, gold: 30, exp: 18, vsMessage: "Komm nutze mich! Wir schauen im Social-Media was!" },
+                    notification: { name: "Benachrichtigungs-Spam", sprite: "🔔", hp: 45, atk: 10, def: 2, gold: 28, exp: 16, vsMessage: "Du hast zu viele Benachrichtigungen! Gehe die mal nach." },
+                    excel: { name: "Excel-Fehler", sprite: "📉", hp: 60, atk: 14, def: 3, gold: 40, exp: 25, vsMessage: "Du hast zu viele Excelfehlern. Bitte behebe die nochmal!" },
+                    deadline: { name: "Deadline-Stress", sprite: "⏰", hp: 75, atk: 18, def: 4, gold: 55, exp: 35, vsMessage: "Kommt leute! Wir haben ne Deadline, was haben wir!" },
+                    bug: { name: "Software-Bug", sprite: "🐛", hp: 50, atk: 12, def: 2, gold: 32, exp: 22, vsMessage: "Oh mann... Es gibt mal wieder Bugs im Programm..." },
+                    password: { name: "Passwort-Vergessen", sprite: "🔐", hp: 40, atk: 8, def: 5, gold: 28, exp: 18, vsMessage: "Mist, habe meine Passwort wieder vergessen!" },
+                    update: { name: "Windows-Update", sprite: "🔄", hp: 80, atk: 10, def: 6, gold: 50, exp: 30, vsMessage: "Jetzt kommt ein neues Windows-Update!" },
+                    wifi: { name: "WLAN-Ausfall", sprite: "📶", hp: 55, atk: 13, def: 3, gold: 38, exp: 24, vsMessage: "Oh, Wlan-Ausfall. Kann jemand den Router neustarten?" },
+                    kunde: { name: "Schwieriger Kunde", sprite: "😤", hp: 65, atk: 16, def: 3, gold: 45, exp: 28, vsMessage: "Ich sagte: Das ist Papier brauchte! Ist es so Schwer?!" },
+                    praktikant: { name: "Verwirrter Praktikant", sprite: "🤷", hp: 30, atk: 5, def: 1, gold: 15, exp: 10, vsMessage: "Oh mann... Was mache ich denn jetzt?" },
+                    kantine: { name: "Kantinen-Essen", sprite: "🍲", hp: 45, atk: 20, def: 1, gold: 25, exp: 15, vsMessage: "Komm, Ess mich. Ich bin ja leckeres Essen!" },
+                    feueralarm: { name: "Fehlalarm", sprite: "🚨", hp: 90, atk: 8, def: 8, gold: 60, exp: 40, vsMessage: "Fehleralarm! Fehleralarm!" },
                     boss: {
                         name: "Der Geschäftsführer", sprite: "👔", hp: 300, atk: 25, def: 6, gold: 500, exp: 200, isBoss: true,
-                        vsMessage: "DEINE LEISTUNGSBEURTEILUNG!",
+                        vsMessage: "Du wagst es, gegen mich anzutreten? Nawarten Sie, bis ich meine volle Kraft entfessle!",
                         phases: [
                             { hpPercent: 100, atk: 25, dialog: "Zeit für deine Leistungsbeurteilung!" },
                             { hpPercent: 50, atk: 35, dialog: "Nicht schlecht! Jetzt wird es ernst! 📈" },
@@ -9683,7 +9683,7 @@
                             }, 250); // 1050 + 250 = 1300
                         }, 150); // Wait 150ms before closing panels
 
-                    }, 900);
+                    }, 850);
 
                     // Clean up zoom and complete battle setup after all animations
                     setTimeout(() => {
