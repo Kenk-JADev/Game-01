@@ -8995,10 +8995,22 @@
                                         showMessage("Perfekt! Das ist genau das, was ich brauchte! 🎉", npc.name, npc.sprite);
                                         queueMessage("Als Dankeschön möchte ich dir etwas Besonderes beibringen...", npc.name, npc.sprite, () => {
                                             // Award special skill
+                                            if (!player.unlockedSkills) player.unlockedSkills = ["tacker", "kaffee", "meeting"];
                                             if (!player.unlockedSkills.includes("ueberstunden")) {
                                                 player.unlockedSkills.push("ueberstunden");
                                                 showMessage("Du hast die exklusive Fähigkeit 'Überstunden-Boost' gelernt! 💪", "📋 System", "📋");
                                                 queueMessage("Mit dieser Fähigkeit kannst du alle deine Statuswerte temporär stark erhöhen!", "📋 System", "📋");
+                                                // Auto-save after receiving skill
+                                                if (typeof setSaveFile === 'function') {
+                                                    setSaveFile({
+                                                        name: player.name,
+                                                        gender: playerGender,
+                                                        dept: playerDept,
+                                                        player: player,
+                                                        currentMapId: currentMapId,
+                                                        unlockedSkills: player.unlockedSkills
+                                                    });
+                                                }
                                             } else {
                                                 showMessage("Du hast bereits diese Fähigkeit gelernt. Hier sind 100 Gold als Entschädigung! 💰", npc.name, npc.sprite);
                                                 player.gold += 100;
@@ -9958,7 +9970,10 @@
                     ];
 
                     const unlockedSkills = player.unlockedSkills || ["tacker", "kaffee", "meeting"];
+                    console.log("[DEBUG] unlockedSkills:", unlockedSkills);
+                    console.log("[DEBUG] allSkills IDs:", allSkills.map(s => s.id));
                     const availableSkills = allSkills.filter(skill => unlockedSkills.includes(skill.id));
+                    console.log("[DEBUG] availableSkills:", availableSkills.map(s => s.id));
 
                     availableSkills.forEach(skill => {
                         const row = document.createElement("div");
