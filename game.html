@@ -89,6 +89,12 @@
             </div>
         </div>
 
+        <!-- BATTLE PANELS -->
+        <div id="battle-panels">
+            <div class="battle-panel top"></div>
+            <div class="battle-panel bottom"></div>
+        </div>
+
         <!-- CHEAT CONSOLE -->
         <div id="cheat-console">
             <div class="cheat-header">
@@ -163,16 +169,21 @@
                         <button class="changelog-close" id="changelog-close">✕</button>
                     </div>
                     <div class="changelog-body">
-                                                <div class="changelog-version">
+                        <div class="changelog-version">
                             <h3>Version 4.0.2 - Save/Load Fix</h3>
                             <div class="changelog-date">Februar 2026</div>
                             <ul>
-                                <li>🐛 Speichersystem komplett überarbeitet: Name, Geschlecht, Items, Abteilung und Ort werden nun korrekt gespeichert</li>
-                                <li>🐛 Laden-Funktion verbessert: Alle Spieler-Daten (Name, Sprite, Gender, Department) werden vollständig wiederhergestellt</li>
-                                <li>🐛 "Fortfahren"-Button im Titelmenü stellt nun alle Charaktereigenschaften korrekt wieder her</li>
+                                <li>🐛 Speichersystem komplett überarbeitet: Name, Geschlecht, Items, Abteilung und Ort
+                                    werden nun korrekt gespeichert</li>
+                                <li>🐛 Laden-Funktion verbessert: Alle Spieler-Daten (Name, Sprite, Gender, Department)
+                                    werden vollständig wiederhergestellt</li>
+                                <li>🐛 "Fortfahren"-Button im Titelmenü stellt nun alle Charaktereigenschaften korrekt
+                                    wieder her</li>
                                 <li>🐛 Speicherdaten enthalten jetzt gender und dept direkt im player-Objekt</li>
-                                <li>🐛 UI-Elemente (HUD, Menü, Battle-Screen) zeigen nach dem Laden die korrekten Werte an</li>
-                                <li>💾 "Neues Spiel" überschreibt bestehende Saves nicht mehr vor Vertragsunterzeichnung</li>
+                                <li>🐛 UI-Elemente (HUD, Menü, Battle-Screen) zeigen nach dem Laden die korrekten Werte
+                                    an</li>
+                                <li>💾 "Neues Spiel" überschreibt bestehende Saves nicht mehr vor Vertragsunterzeichnung
+                                </li>
                             </ul>
                         </div>
                         <div class="changelog-version">
@@ -589,6 +600,8 @@
                             </div>
                         </div>
                     </div>
+                    <div id="vs-message" class="vs-message"></div>
+                    <div id="boss-vs-banner" class="boss-vs-banner"></div>
                 </div>
 
                 <!-- Turn Indicator -->
@@ -701,9 +714,20 @@
                             <div class="reward-item exp"><span class="reward-icon">⭐</span><span
                                     class="reward-text">+<span id="victory-exp">0</span> EXP</span></div>
                         </div>
+                        <div id="xp-bar-container">
+                            <div class="xp-bar-label">Erfahrung</div>
+                            <div class="xp-bar-bg">
+                                <div class="xp-bar-fill" id="xp-bar-fill"></div>
+                            </div>
+                            <div class="xp-bar-text"><span id="xp-current">0</span> / <span id="xp-max">100</span></div>
+                        </div>
                         <div id="levelup-display">
                             <div class="levelup-text">🎉 LEVEL UP!</div>
-                            <div class="levelup-new">Level <span id="new-level">2</span></div>
+                            <div class="levelup-transition">
+                                <span class="old-level">Lvl <span id="old-level">1</span></span>
+                                <span class="level-arrow">→</span>
+                                <span class="new-level">Lvl <span id="new-level">2</span></span>
+                            </div>
                         </div>
                         <div id="victory-chest" class="chest-container">
                             <div class="chest-icon">📦</div>
@@ -747,6 +771,28 @@
                     </div>
                     <div class="shop-items" id="shop-items"></div>
                     <button class="shop-exit-btn" onclick="closeShop()">🚪 Verlassen</button>
+                </div>
+            </div>
+
+            <!-- SKILL SHOP SCREEN -->
+            <div id="rpg-skillshop-screen" class="rpg-screen">
+                <div class="shop-bg">
+                    <div class="shop-particles"></div>
+                </div>
+                <div class="shop-container">
+                    <div class="shop-header">
+                        <div class="shop-keeper-area">
+                            <div class="shop-keeper-sprite">📚</div>
+                            <div class="shop-keeper-dialog">
+                                <span class="keeper-name">Meister Markus</span>
+                                <span class="keeper-text" id="skillshop-keeper-text">"Willkommen zum Skill-Training!"</span>
+                            </div>
+                        </div>
+                        <div class="shop-player-gold"><span class="gold-coin">💰</span><span id="skillshop-gold">50</span>
+                        </div>
+                    </div>
+                    <div class="shop-items" id="skillshop-items"></div>
+                    <button class="shop-exit-btn" onclick="closeSkillShop()">🚪 Verlassen</button>
                 </div>
             </div>
 
@@ -798,694 +844,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- START: ZUEF Widget + BüroVersum RPG - Ultimate Edition v4.0 -->
-    <div id="zuef-main-wrapper">
-
-        <!-- Twemoji für Win10/Win11 konsistente Emojis -->
-        <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js"
-            crossorigin="anonymous"></script>
-
-        <!-- WIDGET (unverändert) -->
-        <div class="zuef-centered-col">
-            <div class="zuef-premium-card" id="zuef-secret-trigger">
-                <div class="zuef-card-body">
-                    <div class="zuef-status-badge"><span class="zuef-live-dot"></span> LIVE</div>
-                    <div id="zuef-image-host"></div>
-                    <div class="zuef-spotlight-effect"></div>
-                    <div class="zuef-shine-sweep"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- RPG OVERLAY -->
-    <div id="rpg-overlay">
-
-        <!-- SPLASH (Mobile-Fixed) -->
-        <div id="rpg-splash" class="rpg-fullscreen">
-            <div class="splash-bg">
-                <div class="splash-particles"></div>
-                <div class="splash-grid"></div>
-            </div>
-            <div class="splash-content">
-                <div class="splash-logo">
-                    <div class="splash-icon">🏢</div>
-                    <div class="splash-icon-glow"></div>
-                </div>
-                <h1 class="splash-title">
-                    <span class="title-letter" style="--i:0">B</span>
-                    <span class="title-letter" style="--i:1">ü</span>
-                    <span class="title-letter" style="--i:2">r</span>
-                    <span class="title-letter" style="--i:3">o</span>
-                    <span class="title-letter" style="--i:4">V</span>
-                    <span class="title-letter" style="--i:5">e</span>
-                    <span class="title-letter" style="--i:6">r</span>
-                    <span class="title-letter" style="--i:7">s</span>
-                    <span class="title-letter" style="--i:8">u</span>
-                    <span class="title-letter" style="--i:9">m</span>
-                </h1>
-                <div class="splash-subtitle">— R O L E P L A Y I N G G A M E —</div>
-                <div class="splash-version">v4.0 Ultimate Edition</div>
-                <div class="splash-credits">Entwickelt von Justin</div>
-                <div class="splash-loader-container">
-                    <div class="splash-loader-bar"></div>
-                    <div class="splash-loader-text">Laden...</div>
-                </div>
-                <!-- MOBILE FIX: Tap-Button für Handy -->
-                <button class="splash-start-btn" id="splash-start-btn">
-                    <span class="press-icon">▶</span>
-                    <span>SPIEL STARTEN</span>
-                </button>
-                <div class="splash-press desktop-only">
-                    <span class="press-icon">▶</span>
-                    <span>Drücke ENTER zum Starten</span>
-                    <span class="press-icon">◀</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- MAP TRANSITION -->
-        <div id="map-transition">
-            <div class="transition-overlay top"></div>
-            <div class="transition-overlay bottom"></div>
-            <div class="transition-content">
-                <div class="transition-icon">🚪</div>
-                <div class="transition-text">Lade...</div>
-                <div class="transition-dots"><span>.</span><span>.</span><span>.</span></div>
-            </div>
-        </div>
-
-        <!-- CHEAT CONSOLE -->
-        <div id="cheat-console">
-            <div class="cheat-header">
-                <span>🎮 Cheat-Konsole</span>
-                <button onclick="toggleCheatConsole()">✕</button>
-            </div>
-            <div class="cheat-log" id="cheat-log"></div>
-            <input type="text" id="cheat-input" placeholder="Cheat eingeben..." autocomplete="off" />
-            <div class="cheat-hints">
-                <small>Befehle: /gold, /hp, /lvl, /tp, /godmode, /items, /help</small>
-            </div>
-        </div>
-
-        <!-- CLOSE BUTTON -->
-        <button id="rpg-close-btn" onclick="closeRPG()">✕</button>
-
-        <!-- GAME WINDOW -->
-        <div id="rpg-game-window">
-
-            <!-- NAME SCREEN -->
-            <div id="rpg-name-screen" class="rpg-screen">
-                <div class="name-screen-bg">
-                    <div class="name-particles"></div>
-                    <div class="name-grid"></div>
-                </div>
-                <div class="name-screen-content">
-                    <div class="contract-wrapper">
-                        <div class="contract-paper">
-                            <div class="contract-header">
-                                <div class="contract-logo">🏢</div>
-                                <div class="contract-company">
-                                    <h2>BüroVersum GmbH.</h2>
-                                    <p>Personalwesen & Ausbildung</p>
-                                </div>
-                                <div class="contract-stamp">
-                                    <span>✓</span>
-                                    <small>GENEHMIGT</small>
-                                </div>
-                            </div>
-
-                            <div class="contract-divider"></div>
-
-                            <div class="contract-title">
-                                <span class="doc-icon">📄</span>
-                                <h3>ARBEITSVERTRAG</h3>
-                                <span class="doc-subtitle">Einstellungsformular für neue Mitarbeiter</span>
-                            </div>
-
-                            <div class="contract-body">
-                                <div class="contract-section">
-                                    <label class="contract-label">
-                                        <span class="label-num">§1</span>
-                                        Name des Mitarbeiters:
-                                    </label>
-                                    <div class="contract-input-wrapper">
-                                        <input type="text" id="rpg-name-input" maxlength="12"
-                                            placeholder="Vollständiger Name..." autocomplete="off" />
-                                        <div class="input-underline"></div>
-                                    </div>
-                                    <div class="name-error" id="name-error"></div>
-                                </div>
-
-                                <div class="contract-section">
-                                    <label class="contract-label">
-                                        <span class="label-num">§2</span>
-                                        Geschlecht:
-                                    </label>
-                                    <div class="gender-select">
-                                        <button type="button" class="gender-btn active" data-gender="m" id="gender-m">
-                                            <span class="gender-icon">🧑‍💼</span>
-                                            <span class="gender-text">Mitarbeiter</span>
-                                        </button>
-                                        <button type="button" class="gender-btn" data-gender="f" id="gender-f">
-                                            <span class="gender-icon">👩‍💼</span>
-                                            <span class="gender-text">Mitarbeiterin</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="contract-section">
-                                    <label class="contract-label">
-                                        <span class="label-num">§3</span>
-                                        Abteilung:
-                                    </label>
-                                    <div class="dept-select">
-                                        <button type="button" class="dept-btn active" data-dept="einkauf"
-                                            id="dept-einkauf">
-                                            <span class="dept-icon">🛒</span>
-                                            <span class="dept-name">Einkauf</span>
-                                        </button>
-                                        <button type="button" class="dept-btn" data-dept="verkauf" id="dept-verkauf">
-                                            <span class="dept-icon">💼</span>
-                                            <span class="dept-name">Verkauf</span>
-                                        </button>
-                                        <button type="button" class="dept-btn" data-dept="zentrale" id="dept-zentrale">
-                                            <span class="dept-icon">🖥️</span>
-                                            <span class="dept-name">Zentrale</span>
-                                        </button>
-                                        <button type="button" class="dept-btn" data-dept="verwaltung"
-                                            id="dept-verwaltung">
-                                            <span class="dept-icon">📋</span>
-                                            <span class="dept-name">Verwaltung</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="contract-section">
-                                    <label class="contract-label">
-                                        <span class="label-num">§4</span>
-                                        Mitarbeiter-Ausweis:
-                                    </label>
-                                    <div class="employee-badge">
-                                        <div class="badge-photo-frame">
-                                            <div class="badge-photo" id="badge-avatar">🧑‍💼</div>
-                                        </div>
-                                        <div class="badge-details">
-                                            <div class="badge-name" id="preview-name">HELD</div>
-                                            <div class="badge-role" id="badge-role" style="display:none;">
-                                                Auszubildende/r</div>
-                                            <div class="badge-dept" id="badge-dept" style="display:none;">Abteilung:
-                                                Einkauf</div>
-                                            <div class="badge-id">ID: #BV-2025-001</div>
-                                            <div class="badge-barcode">||||| |||| ||||| ||||</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="contract-footer">
-                                <div class="contract-signature">
-                                    <div class="signature-line">
-                                        <span class="signature-x"></span>
-                                        <div class="signature-placeholder">Unterschrift Mitarbeiter</div>
-                                    </div>
-                                    <div class="signature-line">
-                                        <span class="signature-signed">Patrick Abend</span>
-                                        <div class="signature-placeholder">Unterschrift Ausbilder</div>
-                                    </div>
-                                </div>
-                                <div class="contract-date">
-                                    Datum: <span id="contract-date"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button id="rpg-start-btn" class="contract-submit-btn">
-                            <span class="btn-icon">✍️</span>
-                            <span class="btn-text">Vertrag unterschreiben & Arbeit beginnen</span>
-                            <span class="btn-arrow">→</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- GAME SCREEN -->
-            <div id="rpg-game-screen" class="rpg-screen">
-                <!-- HUD -->
-                <div id="rpg-hud">
-                    <div class="hud-left">
-                        <div class="hud-portrait-frame">
-                            <div class="hud-portrait" id="hud-portrait">🧑‍💼</div>
-                            <div class="hud-level-badge" id="hud-level">1</div>
-                        </div>
-                        <div class="hud-info">
-                            <div class="hud-name" id="hud-player-name">HELD</div>
-                            <div class="hud-stats">
-                                <div class="hud-bar hp">
-                                    <span class="bar-icon">❤️</span>
-                                    <div class="bar-track">
-                                        <div class="bar-fill" id="hud-hp-bar"></div>
-                                    </div>
-                                    <span class="bar-text"><span id="hud-hp">100</span>/<span
-                                            id="hud-max-hp">100</span></span>
-                                </div>
-                                <div class="hud-bar mp">
-                                    <span class="bar-icon">☕</span>
-                                    <div class="bar-track">
-                                        <div class="bar-fill" id="hud-mp-bar"></div>
-                                    </div>
-                                    <span class="bar-text"><span id="hud-mp">10</span>/10</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hud-center">
-                        <div class="hud-location-badge">
-                            <span class="loc-icon">📍</span>
-                            <span class="loc-text" id="hud-location">Hauptbüro</span>
-                        </div>
-                        <!-- Minimap Toggle -->
-                        <button class="minimap-toggle" onclick="toggleMinimap()">🗺️</button>
-                    </div>
-                    <div class="hud-right">
-                        <div class="hud-gold-display">
-                            <span class="gold-icon">💰</span>
-                            <span class="gold-amount" id="hud-gold">50</span>
-                        </div>
-                        <div class="hud-exp-display">
-                            <span class="exp-icon">⭐</span>
-                            <div class="exp-bar-mini">
-                                <div class="exp-fill-mini" id="hud-exp-bar"></div>
-                            </div>
-                        </div>
-                        <div class="hud-hint">[E] Menü • [C] Cheats</div>
-                    </div>
-                </div>
-
-                <!-- MINIMAP -->
-                <div id="minimap-container">
-                    <canvas id="minimap-canvas"></canvas>
-                    <div class="minimap-legend">
-                        <span>🟢 Du</span>
-                        <span>🔵 NPC</span>
-                        <span>🔴 Gegner</span>
-                        <span>🟡 Tür</span>
-                    </div>
-                </div>
-
-                <!-- VIEWPORT (mit Kamera) -->
-                <div id="rpg-viewport">
-                    <div id="rpg-camera">
-                        <canvas id="rpg-canvas"></canvas>
-                        <div id="rpg-deco-layer"></div>
-                        <div id="rpg-chest-layer"></div>
-                        <div id="rpg-door-layer"></div>
-                        <div id="rpg-player" class="rpg-sprite">
-                            <div class="sprite-shadow"></div>
-                            <div class="sprite-body">🧑‍💼</div>
-                            <div class="sprite-name" id="player-sprite-name"></div>
-                        </div>
-                        <div id="rpg-npc-layer"></div>
-                    </div>
-                    <div id="interaction-hint">
-                        <span class="hint-key">ENTER</span>
-                        <span class="hint-action-icon" id="interaction-icon">💬</span>
-                        <span class="hint-text" id="interaction-text">Interagieren</span>
-                    </div>
-                </div>
-
-                <!-- MESSAGE BOX -->
-                <div id="rpg-msg-box">
-                    <div class="msg-portrait-frame">
-                        <div class="msg-portrait" id="msg-portrait"></div>
-                    </div>
-                    <div class="msg-content">
-                        <div class="msg-speaker" id="msg-speaker"></div>
-                        <div class="msg-text-container">
-                            <div class="msg-choice" id="msg-choice" aria-hidden="true"></div>
-                            <div class="msg-text" id="msg-text"></div>
-                        </div>
-                    </div>
-                    <div class="msg-continue">
-                        <span class="continue-icon">▼</span>
-                        <span>ENTER</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MENU SCREEN -->
-            <div id="rpg-menu-screen" class="rpg-screen">
-                <div class="menu-overlay" onclick="closeMenu()"></div>
-                <div class="menu-window">
-                    <div class="menu-header">
-                        <div class="menu-toast" id="menu-toast"></div>
-                        <span class="menu-title">📋 HAUPTMENÜ</span>
-                        <button class="menu-close" onclick="closeMenu()">✕</button>
-                    </div>
-                    <div class="menu-body">
-                        <div class="menu-tabs">
-                            <button class="menu-tab active" data-tab="status">👤 Status</button>
-                            <button class="menu-tab" data-tab="inventory">🎒 Items</button>
-                            <button class="menu-tab" data-tab="team">👥 Team</button>
-                            <button class="menu-tab" data-tab="map">🗺️ Karte</button>
-                        </div>
-                        <div class="menu-tab-content active" id="tab-status">
-                            <div class="menu-player-card">
-                                <div class="player-card-left">
-                                    <div class="menu-portrait-large" id="menu-portrait">🧑‍💼</div>
-                                    <div class="menu-player-name" id="menu-player-name">HELD</div>
-                                    <div class="menu-player-title" id="menu-player-title">Azubi - Einkauf</div>
-                                </div>
-                                <div class="player-card-right">
-                                    <div class="stat-grid">
-                                        <div class="stat-item"><span class="stat-icon">📊</span><span
-                                                class="stat-label">Level</span><span class="stat-value"
-                                                id="menu-lvl">1</span></div>
-                                        <div class="stat-item"><span class="stat-icon">❤️</span><span
-                                                class="stat-label">HP</span><span class="stat-value"
-                                                id="menu-hp">100/100</span></div>
-                                        <div class="stat-item"><span class="stat-icon">☕</span><span
-                                                class="stat-label">MP</span><span class="stat-value"
-                                                id="menu-mp">10/10</span></div>
-                                        <div class="stat-item"><span class="stat-icon">⚔️</span><span
-                                                class="stat-label">Angriff</span><span class="stat-value"
-                                                id="menu-atk">10</span></div>
-                                        <div class="stat-item"><span class="stat-icon">🛡️</span><span
-                                                class="stat-label">Verteidigung</span><span class="stat-value"
-                                                id="menu-def">2</span></div>
-                                        <div class="stat-item"><span class="stat-icon">💰</span><span
-                                                class="stat-label">Gold</span><span class="stat-value"
-                                                id="menu-gold">50</span></div>
-                                    </div>
-                                    <div class="exp-display">
-                                        <div class="exp-label">⭐ Erfahrung</div>
-                                        <div class="exp-bar-large">
-                                            <div class="exp-fill-large" id="menu-exp-bar"></div>
-                                        </div>
-                                        <div class="exp-text" id="menu-exp">0 / 30</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="menu-tab-content" id="tab-inventory">
-                            <div class="menu-inventory" id="menu-inventory"></div>
-                        </div>
-                        <div class="menu-tab-content" id="tab-team">
-                            <div class="team-grid" id="team-grid"></div>
-                        </div>
-                        <div class="menu-tab-content" id="tab-map">
-                            <div class="world-map" id="world-map"></div>
-                        </div>
-                    </div>
-                    <div class="menu-footer">
-                        <button class="menu-btn save" onclick="saveGame()"><span>💾</span> Speichern</button>
-                        <button class="menu-btn load" onclick="loadGame()"><span>📂</span> Laden</button>
-                        <button class="menu-btn" onclick="closeMenu()"><span>↩️</span> Zurück</button>
-                        <button class="menu-btn danger" onclick="showQuitOptions()"><span>🚪</span> Beenden</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BATTLE SCREEN -->
-            <div id="rpg-battle-screen" class="rpg-screen">
-                <!-- Battle Transition IN -->
-                <div id="battle-transition-in">
-                    <div class="bt-stripe" style="--i:0"></div>
-                    <div class="bt-stripe" style="--i:1"></div>
-                    <div class="bt-stripe" style="--i:2"></div>
-                    <div class="bt-stripe" style="--i:3"></div>
-                    <div class="bt-stripe" style="--i:4"></div>
-                    <div class="bt-stripe" style="--i:5"></div>
-                    <div class="bt-stripe" style="--i:6"></div>
-                    <div class="bt-stripe" style="--i:7"></div>
-                    <div class="bt-flash"></div>
-                </div>
-
-                <!-- Battle Transition OUT -->
-                <div id="battle-transition-out">
-                    <div class="bt-out-top"></div>
-                    <div class="bt-out-bottom"></div>
-                    <div class="bt-out-content">
-                        <div class="bt-out-icon">⚔️</div>
-                        <div class="bt-out-text">Kampf beendet!</div>
-                    </div>
-                </div>
-
-                <!-- Battle BG -->
-                <div id="battle-bg">
-                    <div class="battle-bg-layer bg-layer-1"></div>
-                    <div class="battle-bg-layer bg-layer-2"></div>
-                    <div class="battle-bg-floor"></div>
-                    <div class="battle-fog fog-1"></div>
-                    <div class="battle-fog fog-2"></div>
-                    <div class="battle-particles"></div>
-                </div>
-
-                <!-- VS Splash -->
-                <div id="battle-vs-splash">
-                    <div class="vs-bg-effect"></div>
-                    <div class="vs-content">
-                        <div class="vs-fighter vs-player">
-                            <div class="vs-fighter-bg"></div>
-                            <div class="vs-sprite-wrapper">
-                                <div class="vs-sprite" id="vs-player-sprite">🧑‍💼</div>
-                                <div class="vs-glow"></div>
-                            </div>
-                            <div class="vs-info">
-                                <div class="vs-name" id="vs-player-name">HELD</div>
-                                <div class="vs-title">Azubi</div>
-                            </div>
-                        </div>
-                        <div class="vs-middle">
-                            <div class="vs-spark spark-1">⚡</div>
-                            <div class="vs-text">VS</div>
-                            <div class="vs-spark spark-2">⚡</div>
-                            <div class="vs-clash-effect"></div>
-                        </div>
-                        <div class="vs-fighter vs-enemy">
-                            <div class="vs-fighter-bg enemy"></div>
-                            <div class="vs-sprite-wrapper">
-                                <div class="vs-sprite" id="vs-enemy-sprite">👾</div>
-                                <div class="vs-glow enemy"></div>
-                            </div>
-                            <div class="vs-info">
-                                <div class="vs-name" id="vs-enemy-name">GEGNER</div>
-                                <div class="vs-title enemy">Feind</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Turn Indicator -->
-                <div id="turn-indicator">
-                    <div class="turn-banner">
-                        <div class="turn-bg-slide"></div>
-                        <div class="turn-content">
-                            <span class="turn-icon" id="turn-icon">⚔️</span>
-                            <span class="turn-text" id="turn-text">Dein Zug!</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Enemy Area -->
-                <div id="battle-enemy-area">
-                    <div id="battle-enemy-hud">
-                        <div class="enemy-hud-inner">
-                            <div class="enemy-name" id="battle-enemy-name">Gegner</div>
-                            <div class="enemy-hp-container">
-                                <div class="enemy-hp-bar">
-                                    <div class="hp-fill" id="battle-enemy-hp-fill"></div>
-                                </div>
-                                <div class="enemy-hp-text" id="battle-enemy-hp-text">100/100</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="battle-enemy-sprite-container">
-                        <div id="battle-enemy-sprite">👾</div>
-                        <div id="battle-enemy-shadow"></div>
-                    </div>
-                    <div id="battle-dmg-enemy"></div>
-                    <div id="battle-effect-enemy"></div>
-                </div>
-
-                <!-- Player Area -->
-                <div id="battle-player-area">
-                    <div id="battle-player-platform"></div>
-                    <div id="battle-player-sprite">🧑‍💼</div>
-                    <div id="battle-dmg-player"></div>
-                    <div id="battle-effect-player"></div>
-                </div>
-
-                <!-- Battle UI -->
-                <div id="battle-ui">
-                    <div id="battle-player-hud">
-                        <div class="battle-hud-frame">
-                            <div class="player-portrait-battle" id="battle-portrait">🧑‍💼</div>
-                            <div class="player-info-battle">
-                                <div class="player-name-battle" id="battle-player-name">HELD</div>
-                                <div class="player-bars-battle">
-                                    <div class="p-bar hp">
-                                        <span class="p-bar-label">HP</span>
-                                        <div class="p-bar-track">
-                                            <div class="p-bar-fill" id="battle-hp-fill"></div>
-                                        </div>
-                                        <span class="p-bar-text" id="battle-hp-text">100/100</span>
-                                    </div>
-                                    <div class="p-bar mp">
-                                        <span class="p-bar-label">☕</span>
-                                        <div class="p-bar-track">
-                                            <div class="p-bar-fill" id="battle-mp-fill"></div>
-                                        </div>
-                                        <span class="p-bar-text" id="battle-mp-text">10/10</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="battle-log">
-                        <div class="log-content" id="battle-log-text"></div>
-                    </div>
-
-                    <div id="battle-menu">
-                        <div class="battle-cmd" data-cmd="attack"><span class="cmd-icon">⚔️</span><span
-                                class="cmd-text">Angriff</span></div>
-                        <div class="battle-cmd" data-cmd="skill"><span class="cmd-icon">📎</span><span
-                                class="cmd-text">Skill</span></div>
-                        <div class="battle-cmd" data-cmd="item"><span class="cmd-icon">🎒</span><span
-                                class="cmd-text">Item</span></div>
-                        <div class="battle-cmd" data-cmd="run"><span class="cmd-icon">🚪</span><span
-                                class="cmd-text">Flucht</span></div>
-                    </div>
-                </div>
-
-                <!-- Skill Menu -->
-                <div id="battle-skill-menu" class="battle-submenu">
-                    <div class="submenu-header">📎 Skills</div>
-                    <div id="battle-skill-list"></div>
-                    <button class="submenu-back" onclick="closeSkillMenu()">← Zurück</button>
-                </div>
-
-                <!-- Item Menu -->
-                <div id="battle-item-menu" class="battle-submenu">
-                    <div class="submenu-header">🎒 Items</div>
-                    <div id="battle-item-list"></div>
-                    <button class="submenu-back" onclick="closeItemMenu()">← Zurück</button>
-                </div>
-
-                <!-- Victory Screen -->
-                <div id="victory-screen">
-                    <div class="victory-bg"></div>
-                    <div class="victory-content">
-                        <div class="victory-stars">⭐ ⭐ ⭐</div>
-                        <div class="victory-title">🏆 SIEG!</div>
-                        <div class="victory-subtitle">Kampf gewonnen!</div>
-                        <div class="victory-rewards">
-                            <div class="reward-item gold"><span class="reward-icon">💰</span><span
-                                    class="reward-text">+<span id="victory-gold">0</span> Gold</span></div>
-                            <div class="reward-item exp"><span class="reward-icon">⭐</span><span
-                                    class="reward-text">+<span id="victory-exp">0</span> EXP</span></div>
-                        </div>
-                        <div id="levelup-display">
-                            <div class="levelup-text">🎉 LEVEL UP!</div>
-                            <div class="levelup-new">Level <span id="new-level">2</span></div>
-                        </div>
-                        <div id="victory-chest" class="chest-container">
-                            <div class="chest-icon">📦</div>
-                            <div class="chest-text">Truhe gefunden!</div>
-                            <div class="chest-item" id="chest-item"></div>
-                        </div>
-                        <button class="victory-btn" onclick="endVictory()"><span>Weiter</span><span
-                                class="btn-arrow">→</span></button>
-                    </div>
-                </div>
-
-                <!-- Defeat Screen -->
-                <div id="defeat-screen">
-                    <div class="defeat-bg"></div>
-                    <div class="defeat-content">
-                        <div class="defeat-icon">💀</div>
-                        <div class="defeat-title">NIEDERLAGE</div>
-                        <div class="defeat-text">Du wurdest besiegt...</div>
-                        <div class="defeat-penalty">-20 Gold</div>
-                        <button class="defeat-btn" onclick="respawnPlayer()"><span>Aufstehen</span></button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SHOP SCREEN -->
-            <div id="rpg-shop-screen" class="rpg-screen">
-                <div class="shop-bg">
-                    <div class="shop-particles"></div>
-                </div>
-                <div class="shop-container">
-                    <div class="shop-header">
-                        <div class="shop-keeper-area">
-                            <div class="shop-keeper-sprite">🛒</div>
-                            <div class="shop-keeper-dialog">
-                                <span class="keeper-name">Händler Hans</span>
-                                <span class="keeper-text" id="shop-keeper-text">"Willkommen!"</span>
-                            </div>
-                        </div>
-                        <div class="shop-player-gold"><span class="gold-coin">💰</span><span id="shop-gold">50</span>
-                        </div>
-                    </div>
-                    <div class="shop-items" id="shop-items"></div>
-                    <button class="shop-exit-btn" onclick="closeShop()">🚪 Verlassen</button>
-                </div>
-            </div>
-
-            <!-- ENDING SCREEN -->
-            <div id="rpg-ending-screen" class="rpg-screen">
-                <div class="ending-bg">
-                    <div class="ending-particles"></div>
-                    <div class="ending-confetti"></div>
-                </div>
-                <div class="ending-content">
-                    <div class="ending-trophy-container">
-                        <div class="ending-trophy">🏆</div>
-                        <div class="ending-glow"></div>
-                    </div>
-                    <h1 class="ending-title">GLÜCKWUNSCH!</h1>
-                    <div class="ending-subtitle">Du hast BüroVersum abgeschlossen!</div>
-                    <div class="ending-stats">
-                        <div class="ending-stat"><span class="stat-label">Spieler:</span> <span
-                                id="ending-name">HELD</span></div>
-                        <div class="ending-stat"><span class="stat-label">Level:</span> <span id="ending-level">1</span>
-                        </div>
-                        <div class="ending-stat"><span class="stat-label">Gold:</span> <span id="ending-gold">0</span>
-                        </div>
-                        <div class="ending-stat"><span class="stat-label">Kämpfe:</span> <span
-                                id="ending-battles">0</span></div>
-                        <div class="ending-stat"><span class="stat-label">Kisten:</span> <span
-                                id="ending-chests">0</span></div>
-                    </div>
-                    <div class="ending-credits">
-                        <p>🎮 Entwickelt von Justin</p>
-                        <p>© 2026 BüroVersum GmbH.</p>
-                    </div>
-                    <button class="ending-btn" onclick="closeRPG()">🎉 Beenden</button>
-                </div>
-            </div>
-
-            <!-- MOBILE CONTROLS (Verbessert) -->
-            <div id="rpg-touch-controls">
-                <div class="touch-dpad">
-                    <button class="dpad-btn up" data-dir="up">▲</button>
-                    <button class="dpad-btn left" data-dir="left">◀</button>
-                    <button class="dpad-btn center" data-dir="ok">●</button>
-                    <button class="dpad-btn right" data-dir="right">▶</button>
-                    <button class="dpad-btn down" data-dir="down">▼</button>
-                </div>
-                <div class="touch-actions">
-                    <button class="touch-action-btn" onclick="openMenu()">☰</button>
-                    <button class="touch-action-btn cheat" onclick="toggleCheatConsole()">🎮</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
@@ -2250,6 +1608,14 @@
             animation: transContentFade 1.4s ease-in-out;
         }
 
+        #map-transition.active.no-content .transition-content {
+            animation: none !important;
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
         @keyframes transContentFade {
             0% {
                 opacity: 0;
@@ -2315,6 +1681,125 @@
 
             50% {
                 opacity: 1
+            }
+        }
+
+        #map-transition.no-content .transition-content {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        #map-transition.battle-hold .transition-overlay.top {
+            animation: transSlideDown 0.5s ease-out forwards !important;
+            z-index: 999999 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: block !important;
+        }
+
+        #map-transition.battle-hold .transition-overlay.bottom {
+            animation: transSlideUp2 0.5s ease-out forwards !important;
+            z-index: 999999 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: block !important;
+        }
+
+        /* Immediate opening classes for battle transitions */
+        #map-transition.opening .transition-overlay.top {
+            animation: transSlideUp 0.4s 0s ease-in forwards !important;
+        }
+
+        #map-transition.opening .transition-overlay.bottom {
+            animation: transSlideDown2 0.4s 0s ease-in forwards !important;
+        }
+
+        /* ===== BATTLE PANELS ===== */
+        #battle-panels {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100000;
+            pointer-events: none;
+            display: none;
+        }
+
+        #battle-panels.active {
+            display: block;
+            pointer-events: all;
+        }
+
+        .battle-panel {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 55%;
+            background: #000;
+        }
+
+        .battle-panel.top {
+            top: -55%;
+        }
+
+        .battle-panel.bottom {
+            bottom: -55%;
+        }
+
+        /* Opening animation: Panels slide into view */
+        #battle-panels.open .battle-panel.top {
+            animation: battlePanelTopOpen 0.6s ease-out forwards;
+        }
+
+        #battle-panels.open .battle-panel.bottom {
+            animation: battlePanelBottomOpen 0.6s ease-out forwards;
+        }
+
+        @keyframes battlePanelTopOpen {
+            from {
+                top: -55%;
+            }
+            to {
+                top: 0;
+            }
+        }
+
+        @keyframes battlePanelBottomOpen {
+            from {
+                bottom: -55%;
+            }
+            to {
+                bottom: 0;
+            }
+        }
+
+        /* Closing animation: Panels slide out */
+        #battle-panels.close .battle-panel.top {
+            animation: battlePanelTopClose 0.6s ease-in forwards;
+        }
+
+        #battle-panels.close .battle-panel.bottom {
+            animation: battlePanelBottomClose 0.6s ease-in forwards;
+        }
+
+        @keyframes battlePanelTopClose {
+            from {
+                top: 0;
+            }
+            to {
+                top: -55%;
+            }
+        }
+
+        @keyframes battlePanelBottomClose {
+            from {
+                bottom: 0;
+            }
+            to {
+                bottom: -55%;
             }
         }
 
@@ -2718,8 +2203,11 @@
 
         #rpg-camera {
             position: absolute;
-            transition: transform 0.15s ease-out;
             will-change: transform;
+        }
+
+        #rpg-camera:not(.battle-zoom-in) {
+            transition: transform 0.15s ease-out;
         }
 
         #rpg-canvas {
@@ -3925,19 +3413,108 @@
 
         @keyframes flashBattle {
             0% {
-                opacity: 0
+                opacity: 0;
+                filter: invert(0);
+            }
+
+            10% {
+                opacity: 1;
+                filter: invert(1);
+            }
+
+            20% {
+                opacity: 0.8;
+                filter: invert(0);
             }
 
             30% {
-                opacity: 1
+                opacity: 1;
+                filter: invert(1);
+            }
+
+            40% {
+                opacity: 0.8;
+                filter: invert(0);
             }
 
             50% {
-                opacity: 1
+                opacity: 1;
+                filter: invert(1);
             }
 
             100% {
-                opacity: 0
+                opacity: 0;
+                filter: invert(0);
+            }
+        }
+
+        /* Cinematic Battle Zoom */
+        .battle-zoom-in {
+            animation: zoomInToBattle 1.2s cubic-bezier(.17, .67, .12, .99) forwards !important;
+        }
+
+        @keyframes zoomInToBattle {
+            0% {
+                transform: scale(1) translateZ(0);
+            }
+            50% {
+                transform: scale(8) translateZ(0);
+            }
+            100% {
+                transform: scale(16) translateZ(0);
+            }
+        }
+
+        .battle-spiral-blur {
+            animation: spiralBlur 1.2s ease-in forwards;
+        }
+
+        @keyframes spiralBlur {
+            0% {
+                filter: blur(0) contrast(1) brightness(1) saturate(1);
+            }
+
+            30% {
+                filter: blur(4px) contrast(1.2) brightness(0.9) saturate(1.3) hue-rotate(15deg);
+            }
+
+            70% {
+                filter: blur(12px) contrast(1.6) brightness(0.7) saturate(1.5) hue-rotate(30deg);
+            }
+
+            100% {
+                filter: blur(16px) contrast(1.8) brightness(0.6) saturate(1.6) hue-rotate(45deg);
+            }
+        }
+
+        /* Shockwave Effect */
+        .battle-shockwave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border: 4px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            animation: shockwaveAnim 0.8s ease-out forwards;
+        }
+
+        @keyframes shockwaveAnim {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                border-width: 30px;
+            }
+
+            100% {
+                width: 200%;
+                height: 200%;
+                opacity: 0;
+                border-width: 0;
             }
         }
 
@@ -4362,6 +3939,78 @@
             100% {
                 transform: translate(-50%, -50%) scale(2);
                 opacity: 0
+            }
+        }
+
+        .vs-message {
+            position: absolute;
+            bottom: 160px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 12px 24px;
+            border: 2px solid #f8f;
+            border-radius: 8px;
+            animation: vMessagePop 0.5s 0.8s both;
+            text-shadow: 0 0 10px #f8f;
+            max-width: 80%;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s;
+        }
+
+        #battle-vs-splash.active .vs-message {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #battle-vs-splash:not(.active) .vs-message {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes vMessagePop {
+            from {
+                transform: translateX(-50%) scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .boss-vs-banner {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Press Start 2P', monospace;
+            font-size: 3rem;
+            color: #ff0;
+            text-shadow: 0 0 20px #f00, 0 0 40px #f00, 0 0 60px #f00;
+            animation: bossBannerGlitch 0.6s 0.6s both;
+            letter-spacing: 4px;
+            z-index: 10;
+        }
+
+        @keyframes bossBannerGlitch {
+            0% {
+                transform: translateX(-50%) rotateZ(-5deg) scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translateX(-50%) rotateZ(2deg) scale(1.1);
+                text-shadow: -2px 0 #ff0, 2px 0 #f00, 4px 0 #f8f;
+            }
+            100% {
+                transform: translateX(-50%) rotateZ(0deg) scale(1);
+                opacity: 1;
+                text-shadow: 0 0 20px #f00, 0 0 40px #f00, 0 0 60px #f00;
             }
         }
 
@@ -5177,6 +4826,50 @@
             border: 2px solid #88f;
         }
 
+        #xp-bar-container {
+            display: none;
+            margin: 12px 0;
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #88f;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        #xp-bar-container.visible {
+            display: block;
+        }
+
+        .xp-bar-label {
+            font-size: 0.9rem;
+            color: #88f;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .xp-bar-bg {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #88f;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4488ff, #88ddff);
+            width: 0%;
+            transition: width 0.8s ease-out;
+            box-shadow: 0 0 10px #88ddff;
+        }
+
+        .xp-bar-text {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
         #levelup-display {
             display: none;
             margin: 12px 0;
@@ -5184,22 +4877,79 @@
             background: linear-gradient(135deg, rgba(136, 136, 255, 0.3), rgba(255, 136, 255, 0.3));
             border: 2px solid #f8f;
             border-radius: 10px;
+            animation: levelupPulse 0.6s ease-out;
         }
 
         #levelup-display.visible {
             display: inline-block;
         }
 
+        @keyframes levelupPulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
         .levelup-text {
             font-family: 'Press Start 2P', monospace;
             font-size: 0.8rem;
             color: #f8f;
-            margin-bottom: 3px;
+            margin-bottom: 6px;
+            animation: levelupGlitch 0.4s ease-out;
         }
 
-        .levelup-new {
-            font-size: 1.2rem;
+        @keyframes levelupGlitch {
+            0% {
+                transform: translateX(-3px);
+                opacity: 0;
+            }
+            50% {
+                transform: translateX(3px);
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .levelup-transition {
+            font-size: 1.1rem;
             color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .old-level {
+            color: #aaa;
+            text-decoration: line-through;
+            font-size: 0.95rem;
+        }
+
+        .level-arrow {
+            color: #f8f;
+            font-weight: bold;
+            animation: arrowBounce 0.6s ease-in-out infinite;
+        }
+
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(6px); }
+        }
+
+        .new-level {
+            color: #ffff00;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ffff00;
         }
 
         .chest-container {
@@ -5307,6 +5057,12 @@
             align-items: center;
         }
 
+        /* ===== SKILL SHOP ===== */
+        #rpg-skillshop-screen {
+            justify-content: center;
+            align-items: center;
+        }
+
         .shop-bg {
             position: absolute;
             top: 0;
@@ -5320,7 +5076,7 @@
             position: relative;
             z-index: 1;
             width: 90%;
-            max-width: 480px;
+            max-width: 520px;
             background: linear-gradient(180deg, #1a3a6e, #0d1f3c);
             border: 4px solid var(--primary);
             border-radius: 15px;
@@ -5412,6 +5168,7 @@
         .shop-items {
             max-height: 280px;
             overflow-y: auto;
+            overflow-x: hidden;
             margin-bottom: 10px;
         }
 
@@ -5472,6 +5229,7 @@
 
         .shop-item-info {
             flex: 1;
+            min-width: 0;
         }
 
         .shop-item-name {
@@ -5490,6 +5248,8 @@
             font-size: 1.3rem;
             color: var(--gold);
             font-weight: bold;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .shop-exit-btn {
@@ -5670,9 +5430,16 @@
         }
 
         @keyframes parallaxFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(5%, 2%) scale(1.02); }
-    }
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(5%, 2%) scale(1.02);
+            }
+        }
 
         /* ===== MOBILE CONTROLS ===== */
         #rpg-touch-controls {
@@ -5823,13 +5590,15 @@
         :root {
             --cam-x: 0px;
             --cam-y: 0px;
+            --cam-x-windows: 0px;
+            --cam-y-windows: 0px;
         }
 
         /* Flur: Schwebende Partikel (Staub/Dust) - Parallax */
         .effect-particles::after,
         .effect-particles::before {
             content: "";
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -5846,7 +5615,7 @@
             /* Layer 1: Große Partikel (schneller) */
             background-image: radial-gradient(circle, rgba(255, 255, 255, 0.5) 1px, transparent 1.5px);
             background-size: 120px 120px;
-            background-position: calc(var(--cam-x) * -0.5) calc(var(--cam-y) * -0.5);
+            background-position: var(--cam-x) var(--cam-y);
             animation: particleMove1 30s linear infinite;
         }
 
@@ -5855,7 +5624,7 @@
             background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
             background-size: 80px 80px;
             animation: particleMove2 45s linear infinite;
-            background-position: calc(var(--cam-x) * -0.2) calc(var(--cam-y) * -0.2);
+            background-position: var(--cam-x) var(--cam-y);
         }
 
         /* Boss: Vignette + Dim */
@@ -5890,17 +5659,17 @@
         /* Offices: Parallax God Rays */
         .effect-windows::after {
             content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: repeating-linear-gradient(110deg,
                     transparent 0%,
                     transparent 8%,
                     rgba(255, 255, 220, 0.08) 12%,
                     transparent 16%);
-            background-position: calc(var(--cam-x) * -0.3) calc(var(--cam-y) * -0.3);
+            background-position: var(--cam-x-windows) var(--cam-y-windows);
             pointer-events: none;
             z-index: 90;
             mix-blend-mode: overlay;
@@ -5927,13 +5696,25 @@
         }
 
         @keyframes particleMove1 {
-            0% { background-position: 0 0, calc(var(--cam-x) * -0.5) calc(var(--cam-y) * -0.5); }
-            100% { background-position: -120px -120px, calc(var(--cam-x) * -0.5) calc(var(--cam-y) * -0.5); }
+            0% {
+                background-position: var(--cam-x) var(--cam-y);
+            }
+
+            100% {
+                background-position: calc(var(--cam-x) - 120px) calc(var(--cam-y) - 120px);
+            }
         }
+
         @keyframes particleMove2 {
-            0% { background-position: 0 0, calc(var(--cam-x) * -0.2) calc(var(--cam-y) * -0.2); }
-            100% { background-position: -80px -80px, calc(var(--cam-x) * -0.2) calc(var(--cam-y) * -0.2); }
+            0% {
+                background-position: var(--cam-x) var(--cam-y);
+            }
+
+            100% {
+                background-position: calc(var(--cam-x) - 80px) calc(var(--cam-y) - 80px);
+            }
         }
+
         @keyframes lightPulse {
             0% {
                 opacity: 0.4;
@@ -5953,6 +5734,111 @@
         #preview-dept,
         .signature-x {
             white-space: pre-wrap;
+        }
+
+        /* ===== FEEDBACK EFFECTS ===== */
+        .bump {
+            animation: bump 0.5s ease-out;
+        }
+
+        @keyframes bump {
+            0% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+
+            20% {
+                transform: scale(1.4);
+                filter: brightness(2) saturate(1.5);
+            }
+
+            40% {
+                transform: scale(0.9);
+                filter: brightness(1.2);
+            }
+
+            60% {
+                transform: scale(1.1);
+                filter: brightness(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+        }
+
+        .flash-white {
+            animation: flashWhite 0.6s ease-out forwards;
+        }
+
+        @keyframes flashWhite {
+            0% {
+                background: white;
+                opacity: 0;
+            }
+
+            15% {
+                opacity: 0.9;
+            }
+
+            30% {
+                opacity: 0.4;
+            }
+
+            45% {
+                opacity: 0.9;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes screenShake {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            10% {
+                transform: translate(-4px, -2px);
+            }
+
+            20% {
+                transform: translate(4px, 2px);
+            }
+
+            30% {
+                transform: translate(-6px, 1px);
+            }
+
+            40% {
+                transform: translate(6px, -1px);
+            }
+
+            50% {
+                transform: translate(-4px, 2px);
+            }
+
+            60% {
+                transform: translate(4px, -2px);
+            }
+
+            70% {
+                transform: translate(-2px, 1px);
+            }
+
+            80% {
+                transform: translate(2px, -1px);
+            }
+
+            90% {
+                transform: translate(-1px, 0);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
         }
 
         /* ===== RESPONSIVE ===== */
@@ -7096,7 +6982,7 @@
                     const mapWidth = (currentMap[0]?.length || VIEW_COLS) * TILE;
                     const mapHeight = currentMap.length * TILE;
 
-                    // Mobile Deadzone: Kamera bewegt sich erst wenn Spieler am Rand ist
+                    // Mobile Deadzone: Kamera bewegt sich erst wenn Spieler außerhalb der Deadzone ist
                     if (isMobile && DEADZONE_PERCENT > 0) {
                         const deadzoneX = VIEW_WIDTH * DEADZONE_PERCENT;
                         const deadzoneY = VIEW_HEIGHT * DEADZONE_PERCENT;
@@ -7138,8 +7024,11 @@
 
                     if (cameraEl) {
                         cameraEl.style.transform = `translate(${-cameraX}px, ${-cameraY}px)`;
-                        document.documentElement.style.setProperty('--cam-x', cameraX + "px");
-                        document.documentElement.style.setProperty('--cam-y', cameraY + "px");
+                        // Set parallax offsets for different effect layers
+                        document.documentElement.style.setProperty('--cam-x', (-cameraX * 0.5) + "px");
+                        document.documentElement.style.setProperty('--cam-y', (-cameraY * 0.5) + "px");
+                        document.documentElement.style.setProperty('--cam-x-windows', (-cameraX * 0.3) + "px");
+                        document.documentElement.style.setProperty('--cam-y-windows', (-cameraY * 0.3) + "px");
                     }
                     cameraAnimFrame = requestAnimationFrame(animateCamera);
                 }
@@ -7157,6 +7046,105 @@
                     cameraX = targetCameraX;
                     cameraY = targetCameraY;
                     if (cameraEl) cameraEl.style.transform = `translate(${-cameraX}px, ${-cameraY}px)`;
+                }
+
+                // ===== NPC MOVEMENT =====
+                function startNPCMovementLoop() {
+                    if (npcMoveInterval) clearInterval(npcMoveInterval);
+                    npcMoveInterval = setInterval(updateNPCs, NPC_MOVE_SPEED);
+                }
+
+                function stopNPCMovementLoop() {
+                    if (npcMoveInterval) { clearInterval(npcMoveInterval); npcMoveInterval = null; }
+                }
+
+                function updateNPCs() {
+                    if (gameState !== "MAP" || isTransitioning || isBattleStarting) return;
+
+                    npcs.forEach((npc, i) => {
+                        if (!npc.wander) return;
+
+                        // Initialize runtime props if missing
+                        if (typeof npc.moveState === 'undefined') {
+                            npc.moveState = 'idle';
+                            npc.moveTimer = Math.floor(Math.random() * 5) + 2;
+                        }
+
+                        if (npc.moveState === 'idle') {
+                            npc.moveTimer--;
+                            if (npc.moveTimer <= 0) {
+                                npc.moveState = 'moving';
+                                npc.stepsRemaining = Math.floor(Math.random() * 4) + 1; // 1-4 steps
+                                // Pick random direction: 0=up, 1=right, 2=down, 3=left
+                                const dir = Math.floor(Math.random() * 4);
+                                npc.dx = (dir === 1) ? 1 : (dir === 3) ? -1 : 0;
+                                npc.dy = (dir === 2) ? 1 : (dir === 0) ? -1 : 0;
+                            }
+                        } else if (npc.moveState === 'moving') {
+                            const moved = tryMoveNPC(npc, npc.dx, npc.dy, i);
+                            npc.stepsRemaining--;
+                            if (!moved || npc.stepsRemaining <= 0) {
+                                npc.moveState = 'idle';
+                                npc.moveTimer = Math.floor(Math.random() * 8) + 4; // pause duration
+                            }
+                        }
+                    });
+                    checkNearbyInteractables();
+                }
+
+                function tryMoveNPC(npc, dx, dy, index) {
+                    const nx = npc.x + dx;
+                    const ny = npc.y + dy;
+
+                    // Check bounds
+                    const mapCols = currentMap[0]?.length || 0;
+                    const mapRows = currentMap.length;
+                    if (nx < 0 || nx >= mapCols || ny < 0 || ny >= mapRows) return false;
+
+                    // Check collision with walls/objects
+                    const tile = currentMap[ny][nx];
+                    const tileData = TILES[tile] || {};
+                    if (tileData.block) return false;
+
+                    // Check collision with player
+                    if (nx === player.x && ny === player.y) {
+                        // If enemy walks into player -> START BATTLE
+                        if (npc.type === "enemy" && gameState === "MAP" && !isBattleStarting && !isTransitioning) {
+                            startBattle(npc);
+                        }
+                        return false;
+                    }
+
+                    // Check collision with other NPCs
+                    if (npcs.some((n, j) => index !== j && n.x === nx && n.y === ny)) return false;
+
+                    // Check collision with chests
+                    if (currentChests.some(c => c.x === nx && c.y === ny && !c.opened)) return false;
+
+                    // Move
+                    npc.x = nx;
+                    npc.y = ny;
+
+                    // Update DOM
+                    if (npcLayer && npcLayer.children[index]) {
+                        const el = npcLayer.children[index];
+                        el.style.transition = `left ${NPC_MOVE_SPEED}ms linear, top ${NPC_MOVE_SPEED}ms linear`;
+                        el.style.left = (npc.x * TILE) + "px";
+                        el.style.top = (npc.y * TILE) + "px";
+
+                        // Facing (visual only)
+                        const spriteSpan = el.querySelector(".npc-sprite") || el; // fallback
+                        if (dx > 0) el.style.transform = "scaleX(-1)";
+                        else if (dx < 0) el.style.transform = "scaleX(1)";
+                        // Note: scaleX flips text too, but simple sprites are emojis so mostly fine.
+                        // Ideally we flip only sprite, but structure is: 
+                        // <div class="rpg-npc"> <span name>... <span indicator>... TEXT_NODE_EMOJI </div>
+                        // The emoji is a text node. Flipping the div flips the name too.
+                        // Let's remove the flip for now to avoid upside down text, 
+                        // or just accept they don't face left/right visually for now.
+                        el.style.transform = "";
+                    }
+                    return true;
                 }
 
                 // ===== NAME CENSORSHIP =====
@@ -7230,25 +7218,26 @@
 
                 // ===== ENEMIES =====
                 const ENEMIES = {
-                    telefon: { name: "Telefonterrorist", sprite: "📞", hp: 40, atk: 8, def: 2, gold: 25, exp: 15 },
-                    spam: { name: "Spam-Mail-Flut", sprite: "📧", hp: 35, atk: 7, def: 1, gold: 20, exp: 12 },
-                    drucker: { name: "Drucker-Dämon", sprite: "🖨️", hp: 55, atk: 12, def: 3, gold: 35, exp: 20 },
-                    kaffee: { name: "Kaffee-Gremlin", sprite: "☕", hp: 45, atk: 9, def: 2, gold: 25, exp: 15 },
-                    meeting: { name: "Meeting-Monster", sprite: "📊", hp: 70, atk: 15, def: 4, gold: 45, exp: 28 },
-                    handy: { name: "Handy-Sucht", sprite: "📱", hp: 50, atk: 11, def: 2, gold: 30, exp: 18 },
-                    notification: { name: "Benachrichtigungs-Spam", sprite: "🔔", hp: 45, atk: 10, def: 2, gold: 28, exp: 16 },
-                    excel: { name: "Excel-Fehler", sprite: "📉", hp: 60, atk: 14, def: 3, gold: 40, exp: 25 },
-                    deadline: { name: "Deadline-Stress", sprite: "⏰", hp: 75, atk: 18, def: 4, gold: 55, exp: 35 },
-                    bug: { name: "Software-Bug", sprite: "🐛", hp: 50, atk: 12, def: 2, gold: 32, exp: 22 },
-                    password: { name: "Passwort-Vergessen", sprite: "🔐", hp: 40, atk: 8, def: 5, gold: 28, exp: 18 },
-                    update: { name: "Windows-Update", sprite: "🔄", hp: 80, atk: 10, def: 6, gold: 50, exp: 30 },
-                    wifi: { name: "WLAN-Ausfall", sprite: "📶", hp: 55, atk: 13, def: 3, gold: 38, exp: 24 },
-                    kunde: { name: "Schwieriger Kunde", sprite: "😤", hp: 65, atk: 16, def: 3, gold: 45, exp: 28 },
-                    praktikant: { name: "Verwirrter Praktikant", sprite: "🤷", hp: 30, atk: 5, def: 1, gold: 15, exp: 10 },
-                    kantine: { name: "Kantinen-Essen", sprite: "🍲", hp: 45, atk: 20, def: 1, gold: 25, exp: 15 },
-                    feueralarm: { name: "Fehlalarm", sprite: "🚨", hp: 90, atk: 8, def: 8, gold: 60, exp: 40 },
+                    telefon: { name: "Telefonterrorist", sprite: "📞", hp: 40, atk: 8, def: 2, gold: 25, exp: 15, vsMessage: "Klingeln nerven!" },
+                    spam: { name: "Spam-Mail-Flut", sprite: "📧", hp: 35, atk: 7, def: 1, gold: 20, exp: 12, vsMessage: "Zu viele Mails!" },
+                    drucker: { name: "Drucker-Dämon", sprite: "🖨️", hp: 55, atk: 12, def: 3, gold: 35, exp: 20, vsMessage: "Papier-Chaos!" },
+                    kaffee: { name: "Kaffee-Gremlin", sprite: "☕", hp: 45, atk: 9, def: 2, gold: 25, exp: 15, vsMessage: "Zu stark!" },
+                    meeting: { name: "Meeting-Monster", sprite: "📊", hp: 70, atk: 15, def: 4, gold: 45, exp: 28, vsMessage: "Hätte Email sein können..." },
+                    handy: { name: "Handy-Sucht", sprite: "📱", hp: 50, atk: 11, def: 2, gold: 30, exp: 18, vsMessage: "Zu abhängig!" },
+                    notification: { name: "Benachrichtigungs-Spam", sprite: "🔔", hp: 45, atk: 10, def: 2, gold: 28, exp: 16, vsMessage: "Zu viele Alerts!" },
+                    excel: { name: "Excel-Fehler", sprite: "📉", hp: 60, atk: 14, def: 3, gold: 40, exp: 25, vsMessage: "Funktioniert nicht!" },
+                    deadline: { name: "Deadline-Stress", sprite: "⏰", hp: 75, atk: 18, def: 4, gold: 55, exp: 35, vsMessage: "Läuft mir davon!" },
+                    bug: { name: "Software-Bug", sprite: "🐛", hp: 50, atk: 12, def: 2, gold: 32, exp: 22, vsMessage: "Wer baut das ein?" },
+                    password: { name: "Passwort-Vergessen", sprite: "🔐", hp: 40, atk: 8, def: 5, gold: 28, exp: 18, vsMessage: "Wieder..!" },
+                    update: { name: "Windows-Update", sprite: "🔄", hp: 80, atk: 10, def: 6, gold: 50, exp: 30, vsMessage: "Jetzt schon wieder!" },
+                    wifi: { name: "WLAN-Ausfall", sprite: "📶", hp: 55, atk: 13, def: 3, gold: 38, exp: 24, vsMessage: "Verbindung weg!" },
+                    kunde: { name: "Schwieriger Kunde", sprite: "😤", hp: 65, atk: 16, def: 3, gold: 45, exp: 28, vsMessage: "Der ist sauer!" },
+                    praktikant: { name: "Verwirrter Praktikant", sprite: "🤷", hp: 30, atk: 5, def: 1, gold: 15, exp: 10, vsMessage: "Was mache ich jetzt?" },
+                    kantine: { name: "Kantinen-Essen", sprite: "🍲", hp: 45, atk: 20, def: 1, gold: 25, exp: 15, vsMessage: "Und das ist Essen?" },
+                    feueralarm: { name: "Fehlalarm", sprite: "🚨", hp: 90, atk: 8, def: 8, gold: 60, exp: 40, vsMessage: "Wieder Falschalarm!" },
                     boss: {
                         name: "Der Geschäftsführer", sprite: "👔", hp: 300, atk: 25, def: 6, gold: 500, exp: 200, isBoss: true,
+                        vsMessage: "DEINE LEISTUNGSBEURTEILUNG!",
                         phases: [
                             { hpPercent: 100, atk: 25, dialog: "Zeit für deine Leistungsbeurteilung!" },
                             { hpPercent: 50, atk: 35, dialog: "Nicht schlecht! Jetzt wird es ernst! 📈" },
@@ -7276,12 +7265,22 @@
                     { name: "Goldschatz", icon: "💰", type: "gold", amount: 100 },
                     { name: "Bonus-Kaffee", icon: "☕", type: "item", itemId: "kaffee" },
                     { name: "Energy Drink", icon: "⚡", type: "item", itemId: "energy" },
-                    { name: "Geheimer Tacker", icon: "📎", type: "atk", amount: 3 },
-                    { name: "Vitamintabletten", icon: "💊", type: "hp", amount: 15 },
-                    { name: "Motivation", icon: "⭐", type: "exp", amount: 20 },
-                    { name: "Büro-Snack", icon: "🍪", type: "item", itemId: "donut" },
-                    { name: "Geheime Akten", icon: "📁", type: "exp", amount: 50 },
-                    { name: "Bonus-Sandwich", icon: "🥪", type: "item", itemId: "sandwich" }
+                    { id: "tacker", name: "Geheimer Tacker", icon: "📎", type: "atk", amount: 3 },
+                    { id: "vitamins", name: "Vitamintabletten", icon: "💊", type: "hp", amount: 15 },
+                    { id: "motivation", name: "Motivation", icon: "⭐", type: "exp", amount: 20 },
+                    { id: "donut", name: "Büro-Snack", icon: "🍪", type: "item", itemId: "donut" },
+                    { id: "akten", name: "Geheime Akten", icon: "📁", type: "exp", amount: 50 },
+                    { id: "sandwich", name: "Bonus-Sandwich", icon: "🥪", type: "item", itemId: "sandwich" }
+                ];
+
+                // ===== SKILL SHOP ITEMS =====
+                const SKILL_ITEMS = [
+                    { id: "tacker", name: "Tacker-Angriff", icon: "📎", desc: "Klassischer Tacker-Angriff", price: 100, dmgMult: 2, mpCost: 4 },
+                    { id: "kaffee", name: "Kaffee-Wurf", icon: "☕", desc: "Energiegeladener Kaffee-Wurf", price: 150, dmgMult: 2.5, mpCost: 6 },
+                    { id: "meeting", name: "Meeting einberufen", icon: "📊", desc: "Extrem effektive Meeting-Bombe", price: 200, dmgMult: 3, mpCost: 8 },
+                    { id: "papier", name: "Papier-Papiertiger", icon: "📄", desc: "Papier-basierter Angriff", price: 120, dmgMult: 2.2, mpCost: 5 },
+                    { id: "fax", name: "Fax-Blitz", icon: "📠", desc: "Schneller Fax-Angriff", price: 180, dmgMult: 2.8, mpCost: 7 },
+                    { id: "printer", name: "Drucker-Crash", icon: "🖨️", desc: "Chaotischer Drucker-Crash", price: 220, dmgMult: 3.2, mpCost: 9 }
                 ];
 
                 // ===== DOORS =====
@@ -7347,19 +7346,26 @@
                             },
                             {
                                 x: 10, y: 2, type: "talk", sprite: "👨‍🦱", name: "Jannik", role: "Azubi Einkauf",
-                                dialog: ["Moin! Ich bin Jannik.", "Im Einkauf geht's oft um Timing.", "Hol dir was für Angriff oder Max-HP!"]
+                                dialog: ["Moin! Ich bin Jannik.", "Im Einkauf geht's oft um Timing.", "Hol dir was für Angriff oder Max-HP!"],
+                                wander: true
                             },
                             {
                                 x: 17, y: 2, type: "talk", sprite: "👩‍🦱", name: "Hamda", role: "Azubi Einkauf",
-                                dialog: ["Hi! Hamda hier.", "Orientier dich an den Türen (🚪).", "Du schaffst das! 💪"]
+                                dialog: ["Hi! Hamda hier.", "Orientier dich an den Türen (🚪).", "Du schaffst das! 💪"],
+                                wander: true
                             },
                             {
                                 x: 3, y: 9, type: "talk", sprite: "👩", name: "Deborha", role: "Azubi Einkauf",
-                                dialog: ["Hey! Deborha hier.", "Kaffee ist quasi eine Superkraft. ☕"]
+                                dialog: ["Hey! Deborha hier.", "Kaffee ist quasi eine Superkraft. ☕"],
+                                wander: true
                             },
                             {
-                                x: 3, y: 15, type: "shop", sprite: "🛒", name: "Händler Hans", role: "Verkäufer",
+                                x: 12, y: 8, type: "shop", sprite: "🛒", name: "Händler Hans", role: "Verkäufer",
                                 dialog: ["Ich habe alles was du brauchst!", "Kaffee? Donuts? Alles da!"]
+                            },
+                            {
+                                x: 14, y: 8, type: "skillshop", sprite: "📚", name: "Meister Markus", role: "Skill-Trainer",
+                                dialog: ["Willkommen zum Skill-Training!", "Lerne neue mächtige Fähigkeiten!"]
                             },
 
 
@@ -7428,11 +7434,11 @@
                         ],
                         chests: [{ x: 2, y: 16, type: "normal" }, { x: 17, y: 3, type: "rare" }],
                         npcs: [
-                            { x: 16, y: 10, type: "talk", sprite: "👨‍💼", name: "Andreas", role: "Verkauf", dialog: ["Guten Tag!"] },
-                            { x: 5, y: 5, type: "enemy", sprite: "📞", name: "Telefonterror", enemyId: "telefon" },
+                            { x: 16, y: 10, type: "talk", sprite: "👨‍💼", name: "Andreas", role: "Verkauf", dialog: ["Guten Tag!"], wander: true },
+                            { x: 5, y: 5, type: "enemy", sprite: "📞", name: "Telefonterror", enemyId: "telefon", wander: true },
                             { x: 15, y: 15, type: "enemy", sprite: "📧", name: "Spam-Mail", enemyId: "spam" },
                             { x: 15, y: 5, type: "enemy", sprite: "📉", name: "Excel-Fehler", enemyId: "excel" },
-                            { x: 5, y: 15, type: "enemy", sprite: "🤷", name: "Praktikant", enemyId: "praktikant" },
+                            { x: 5, y: 15, type: "enemy", sprite: "🤷", name: "Praktikant", enemyId: "praktikant", wander: true },
                         ],
                         start: { x: 5, y: 9 }
                     },
@@ -7507,7 +7513,7 @@
                             { x: 15, y: 8, type: "talk", sprite: "👨‍🍳", name: "Koch Werner", role: "Chefkoch", dialog: ["Mahlzeit! Werner hier.", "Heute gibt's Überraschungseintopf!"] },
                             { x: 8, y: 4, type: "enemy", sprite: "🍲", name: "Kantinen-Essen", enemyId: "kantine" },
                             { x: 22, y: 11, type: "enemy", sprite: "🍲", name: "Kantinen-Essen", enemyId: "kantine" },
-                            { x: 14, y: 14, type: "enemy", sprite: "😤", name: "Hungriger Kunde", enemyId: "kunde" }
+                            { x: 14, y: 14, type: "enemy", sprite: "😤", name: "Hungriger Kunde", enemyId: "kunde", wander: true }
                         ],
                         start: { x: 13, y: 17 }
                     },
@@ -7641,7 +7647,9 @@
                 // ===== GAME STATE =====
                 let gameState = "SPLASH";
                 let player = {};
-                let keysHeld = {}, moveInterval = null, lastMoveTime = 0;
+                let keysHeld = {}, directionHistory = [], moveInterval = null, lastMoveTime = 0;
+                let npcMoveInterval = null;
+                const NPC_MOVE_SPEED = 500; // ms per step
                 let currentMapId = "", currentMap = [], npcs = [], currentDecos = [], currentChests = [];
                 let currentEnemy = null, enemyHp = 0, enemyMaxHp = 0, battleMenuIndex = 0;
                 let isPlayerTurn = true, battleLocked = false, bossPhase = 0;
@@ -7685,6 +7693,8 @@
 
                     if (dx < 0) { player.facing = "left"; playerEl.classList.add("face-left"); }
                     else if (dx > 0) { player.facing = "right"; playerEl.classList.remove("face-left"); }
+                    else if (dy < 0) { player.facing = "up"; }
+                    else if (dy > 0) { player.facing = "down"; }
 
                     const tile = currentMap[ny] ? currentMap[ny][nx] : 1;
                     const tileData = TILES[tile] || {};
@@ -8107,6 +8117,7 @@
                 // ===== RESET FUNCTION =====
                 function resetGame() {
                     stopCameraLoop();
+                    stopNPCMovementLoop();
                     gameState = "SPLASH";
                     player = {
                         name: "Held", x: 5, y: 7, hp: 100, maxHp: 100, mp: 10, maxMp: 10,
@@ -8139,6 +8150,7 @@
                     document.getElementById("turn-indicator")?.classList.remove("active", "enemy-turn");
                     document.getElementById("levelup-display")?.classList.remove("visible");
                     document.getElementById("battle-transition-in")?.classList.remove("active");
+                    document.getElementById("battle-panels")?.classList.remove("active", "open", "close");
                     // Reset effects
                     document.getElementById("rpg-game-window")?.classList.remove("effect-particles", "effect-dim", "effect-windows");
                     document.getElementById("battle-transition-out")?.classList.remove("active");
@@ -8153,7 +8165,7 @@
                     if (nameInp) nameInp.value = "";
                     if (msgText) msgText.innerHTML = "";
                     if (cheatLog) cheatLog.innerHTML = "";
-                    if (mapTrans) mapTrans.classList.remove("active");
+                    if (mapTrans) mapTrans.classList.remove("active", "battle-hold", "no-content", "opening");
 
                     // Clear signature and badge previews
                     document.querySelectorAll('.signature-x').forEach(el => el.innerText = '');
@@ -8213,6 +8225,7 @@
 
                 window.closeRPG = function () {
                     stopCameraLoop();
+                    stopNPCMovementLoop();
                     overlay.classList.remove("open");
                     overlay.classList.add("closing");
                     setTimeout(() => {
@@ -8282,19 +8295,20 @@
                     // Restore gender and department first
                     playerGender = save.gender || "m";
                     playerDept = save.dept || "einkauf";
-                    
+
                     // Restore player object with all properties
                     player = save.player || {};
                     player.name = save.name || player.name || "Held";
-                    
+
                     // Ensure player has gender, dept, and sprite
                     player.gender = playerGender;
                     player.dept = playerDept;
                     player.sprite = player.sprite || GENDER_SPRITES[playerGender];
-                    
+                    player.unlockedSkills = save.unlockedSkills || player.unlockedSkills || ["tacker", "kaffee", "meeting"];
+
                     // Restore location
                     currentMapId = save.currentMapId || "buero";
-                    
+
                     // Restore game progress
                     defeatedEnemies = new Set(save.defeatedEnemies || []);
                     openedChests = new Set(save.openedChests || []);
@@ -8309,18 +8323,18 @@
                     _upd("battle-player-name", player.name);
                     _upd("menu-player-name", player.name);
                     _upd("vs-player-name", player.name);
-                    
+
                     _upd("hud-portrait", player.sprite);
                     _upd("menu-portrait", player.sprite);
                     _upd("battle-portrait", player.sprite);
                     _upd("vs-player-sprite", player.sprite);
-                    
+
                     const spriteBody = document.querySelector("#rpg-player .sprite-body");
                     if (spriteBody) spriteBody.innerText = player.sprite;
-                    
+
                     const battlePortrait = document.querySelector(".player-portrait-battle");
                     if (battlePortrait) battlePortrait.innerText = player.sprite;
-                    
+
                     _upd("menu-player-title", GENDER_TITLES[playerGender] + " - " + DEPT_NAMES[playerDept]);
 
                     if (mapTrans) {
@@ -8457,6 +8471,7 @@
                     player.gender = playerGender;
                     player.dept = playerDept;
                     player.sprite = GENDER_SPRITES[playerGender];
+                    player.unlockedSkills = ["tacker", "kaffee", "meeting"]; // Start mit 3 Skills
 
                     // Starte TypeWrite-Effekt auf dem Arbeitsvertrag
                     playContractTypeWriteAnimation();
@@ -8617,7 +8632,8 @@
                         gender: playerGender,
                         dept: playerDept,
                         player: player,
-                        currentMapId: startMap
+                        currentMapId: startMap,
+                        unlockedSkills: player.unlockedSkills || []
                     });
 
                     startMapTransition();
@@ -8723,7 +8739,7 @@
                     spawnDoors();
                     updatePlayerSprite();
 
-                    // Map Effects
+                    // Map Effects (immer anwenden, wenn Map geladen wird)
                     const gameWin = document.getElementById("rpg-game-window");
                     if (gameWin) {
                         gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
@@ -8735,6 +8751,8 @@
                     spawnNPCs();
                     snapCamera();
                     updateMinimap();
+                    startCameraLoop();
+                    startNPCMovementLoop();
 
                     parseEmojis(document.getElementById("rpg-game-screen"));
                 }
@@ -8800,6 +8818,7 @@
                         el.className = "rpg-npc npc-idle";
                         let indicator = "💬";
                         if (npc.type === "shop") indicator = "🛒";
+                        else if (npc.type === "skillshop") indicator = "📚";
                         else if (npc.type === "enemy") indicator = "❗";
                         if (npc.isBoss) indicator = "👑";
 
@@ -8838,10 +8857,12 @@
                     }
 
                     nearbyNPC = null;
-                    for (const npc of npcs) {
-                        const dist = Math.abs(player.x - npc.x) + Math.abs(player.y - npc.y);
-                        if (dist === 1) { nearbyNPC = npc; break; }
-                    }
+                    // Prioritize enemies for interaction check
+                    const adjacentNPCs = npcs.filter(n => Math.abs(player.x - n.x) + Math.abs(player.y - n.y) === 1);
+                    const enemyNPC = adjacentNPCs.find(n => n.type === "enemy");
+
+                    if (enemyNPC) nearbyNPC = enemyNPC;
+                    else if (adjacentNPCs.length > 0) nearbyNPC = adjacentNPCs[0];
 
                     if (!nearbyNPC) {
                         checkNearbyChest();
@@ -8854,6 +8875,7 @@
                     let label = "Interagieren", icon = "🤝", mode = "mode-default";
                     if (nearbyNPC.type === "talk") { label = "Ansprechen"; icon = "💬"; mode = "mode-talk"; }
                     else if (nearbyNPC.type === "shop") { label = "Einkaufen"; icon = "🛒"; mode = "mode-shop"; }
+                    else if (nearbyNPC.type === "skillshop") { label = "Training"; icon = "📚"; mode = "mode-shop"; }
                     else if (nearbyNPC.type === "enemy") { label = "Angreifen"; icon = "⚔️"; mode = "mode-attack"; }
 
                     if (textEl) textEl.innerText = label;
@@ -8873,6 +8895,7 @@
                     }
 
                     if (npc.type === "shop") { openShop(); return; }
+                    if (npc.type === "skillshop") { openSkillShop(); return; }
                     if (npc.type === "enemy") { startBattle(npc); return; }
 
                     let lines = Array.isArray(npc.dialog) ? npc.dialog.slice() : ["..."];
@@ -9027,6 +9050,9 @@
                 window.openMenu = function () {
                     if (gameState !== "MAP") return;
                     gameState = "MENU";
+                    // Remove map effects when opening menu
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (gameWin) gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
                     showScreen("rpg-menu-screen");
                     updateMenuStats();
                     updateTeamTab();
@@ -9036,6 +9062,15 @@
                 window.closeMenu = function () {
                     showScreen("rpg-game-screen");
                     gameState = "MAP";
+                    // Restore map effects when closing menu
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (gameWin) {
+                        gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                        if (currentMapId === "flur") gameWin.classList.add("effect-particles");
+                        else if (currentMapId === "boss_office") gameWin.classList.add("effect-dim");
+                        else if (currentMapId === "buero" || currentMapId === "zentrale") gameWin.classList.add("effect-windows");
+                        else if (currentMapId === "kantine") gameWin.classList.add("effect-windows");
+                    }
                 };
 
                 document.querySelectorAll(".menu-tab").forEach(tab => {
@@ -9212,7 +9247,8 @@
                     // Ensure player object has the latest gender and dept
                     player.gender = playerGender;
                     player.dept = playerDept;
-                    
+                    if (!player.unlockedSkills) player.unlockedSkills = [];
+
                     const saveData = {
                         version: "4.0.2",
                         // Top-level metadata for compatibility with older save readers
@@ -9226,6 +9262,7 @@
                         currentMapId: currentMapId,
                         battleCount: battleCount,
                         chestCount: chestCount,
+                        unlockedSkills: player.unlockedSkills,
                         timestamp: Date.now()
                     };
 
@@ -9246,20 +9283,21 @@
                     try {
                         const data = JSON.parse(saved);
                         console.log("[BüroVersum] Loaded save:", data);
-                        
+
                         // Restore player object with all properties
                         player = data.player || {};
                         player.name = player.name || data.name || "Held";
-                        
+                        player.unlockedSkills = data.unlockedSkills || player.unlockedSkills || ["tacker", "kaffee", "meeting"];
+
                         // Restore gender and department
                         playerGender = data.gender || player.gender || "m";
                         playerDept = data.dept || player.dept || "einkauf";
-                        
+
                         // Ensure player sprite is correct
                         player.sprite = player.sprite || GENDER_SPRITES[playerGender];
                         player.gender = playerGender;
                         player.dept = playerDept;
-                        
+
                         // Restore game state
                         defeatedEnemies = new Set(data.defeatedEnemies || []);
                         openedChests = new Set(data.openedChests || []);
@@ -9274,19 +9312,19 @@
                         update("battle-player-name", player.name);
                         update("menu-player-name", player.name);
                         update("vs-player-name", player.name);
-                        
+
                         // Update sprites everywhere
                         update("hud-portrait", player.sprite);
                         update("menu-portrait", player.sprite);
                         update("battle-portrait", player.sprite);
                         update("vs-player-sprite", player.sprite);
-                        
+
                         const spriteBody = document.querySelector("#rpg-player .sprite-body");
                         if (spriteBody) spriteBody.innerText = player.sprite;
-                        
+
                         const battlePortrait = document.querySelector(".player-portrait-battle");
                         if (battlePortrait) battlePortrait.innerText = player.sprite;
-                        
+
                         // Update player title in menu
                         update("menu-player-title", GENDER_TITLES[playerGender] + " - " + DEPT_NAMES[playerDept]);
 
@@ -9318,6 +9356,9 @@
                 // ===== SHOP =====
                 function openShop() {
                     gameState = "SHOP";
+                    // Remove map effects when opening shop
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (gameWin) gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
                     const goldEl = document.getElementById("shop-gold");
                     const keeperText = document.getElementById("shop-keeper-text");
                     if (goldEl) goldEl.innerText = player.gold;
@@ -9392,11 +9433,172 @@
                 window.closeShop = function () {
                     showScreen("rpg-game-screen");
                     gameState = "MAP";
+                    // Restore map effects when closing shop
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (gameWin) {
+                        gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                        if (currentMapId === "flur") gameWin.classList.add("effect-particles");
+                        else if (currentMapId === "boss_office") gameWin.classList.add("effect-dim");
+                        else if (currentMapId === "buero" || currentMapId === "zentrale") gameWin.classList.add("effect-windows");
+                        else if (currentMapId === "kantine") gameWin.classList.add("effect-windows");
+                    }
+                };
+
+                // ===== SKILL SHOP =====
+                function openSkillShop() {
+                    gameState = "SKILLSHOP";
+                    // Remove map effects when opening skill shop
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (gameWin) gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                    const goldEl = document.getElementById("skillshop-gold");
+                    const keeperText = document.getElementById("skillshop-keeper-text");
+                    if (goldEl) goldEl.innerText = player.gold;
+                    if (keeperText) keeperText.innerText = '"Möchtest du neue Fähigkeiten erlernen?"';
+                    renderSkillShopItems();
+                    showScreen("rpg-skillshop-screen");
+                }
+
+                function renderSkillShopItems() {
+                    const container = document.getElementById("skillshop-items");
+                    if (!container) return;
+                    container.innerHTML = "";
+
+                    if (!player.unlockedSkills) player.unlockedSkills = [];
+
+                    SKILL_ITEMS.forEach(skill => {
+                        const isUnlocked = player.unlockedSkills.includes(skill.id);
+                        const canAfford = player.gold >= skill.price;
+                        const el = document.createElement("div");
+                        let className = "shop-item";
+                        if (isUnlocked) className += " purchased"; // Already learned
+                        else if (!canAfford) className += " too-expensive";
+                        el.className = className;
+                        
+                        const priceText = isUnlocked ? "✓ Gelernt" : `${skill.price}G`;
+                        el.innerHTML = `<span class="shop-item-icon">${skill.icon}</span><div class="shop-item-info"><span class="shop-item-name">${skill.name}</span><span class="shop-item-desc">${skill.desc}</span></div><span class="shop-item-price">${priceText}</span>`;
+                        
+                        if (!isUnlocked) {
+                            el.onclick = () => buySkill(skill);
+                            el.style.cursor = "pointer";
+                        } else {
+                            el.style.cursor = "default";
+                        }
+                        container.appendChild(el);
+                    });
+
+                    parseEmojis(container);
+                }
+
+                function buySkill(skill) {
+                    const keeperText = document.getElementById("skillshop-keeper-text");
+
+                    if (player.gold < skill.price) {
+                        if (keeperText) keeperText.innerText = '"Nicht genug Gold für diesen Skill!"';
+                        return;
+                    }
+
+                    if (!player.unlockedSkills) player.unlockedSkills = [];
+
+                    if (player.unlockedSkills.includes(skill.id)) {
+                        if (keeperText) keeperText.innerText = '"Du kennst diesen Skill bereits!"';
+                        return;
+                    }
+
+                    player.gold -= skill.price;
+                    player.unlockedSkills.push(skill.id);
+                    
+                    const goldEl = document.getElementById("skillshop-gold");
+                    if (goldEl) goldEl.innerText = player.gold;
+
+                    const skillShopItems = document.querySelectorAll("#skillshop-items .shop-item");
+                    skillShopItems.forEach(el => {
+                        if (el.querySelector(".shop-item-name")?.innerText === skill.name) {
+                            el.classList.add("purchased");
+                            setTimeout(() => el.classList.remove("purchased"), 500);
+                        }
+                    });
+
+                    renderSkillShopItems();
+                    if (keeperText) keeperText.innerText = `"${skill.name} gelernt! 📚"`;
+                    updateHUD();
+                }
+
+                window.closeSkillShop = function () {
+                    showScreen("rpg-game-screen");
+                    gameState = "MAP";
+                    // Restore map effects when closing skill shop
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (gameWin) {
+                        gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                        if (currentMapId === "flur") gameWin.classList.add("effect-particles");
+                        else if (currentMapId === "boss_office") gameWin.classList.add("effect-dim");
+                        else if (currentMapId === "buero" || currentMapId === "zentrale") gameWin.classList.add("effect-windows");
+                        else if (currentMapId === "kantine") gameWin.classList.add("effect-windows");
+                    }
                 };
 
                 // ===== BATTLE SYSTEM =====
+                function triggerBumpEffect(el = null) {
+                    const gameWin = document.getElementById("rpg-game-window");
+                    const camera = document.getElementById("rpg-camera");
+
+                    if (gameWin) {
+                        // 1. FLASH & SHOCKWAVE (Immediate)
+                        const flash = document.createElement("div");
+                        flash.style.cssText = "position:absolute;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;background:white;opacity:0;";
+                        flash.classList.add("flash-white");
+                        gameWin.appendChild(flash);
+
+                        const sw = document.createElement("div");
+                        sw.className = "battle-shockwave";
+                        gameWin.appendChild(sw);
+
+                        gameWin.classList.add("screen-shake");
+
+                        // Wait 0.5s for the flash before starting the zoom effect
+                        setTimeout(() => {
+                            // 2. PRECISE ZOOM-IN TO PLAYER (Using viewport center)
+                            if (camera && playerEl) {
+                                // Zoom from viewport center for consistent zoom effect
+                                camera.style.transformOrigin = "50% 50%";
+                                camera.classList.add("battle-zoom-in");
+                                camera.classList.add("battle-spiral-blur");
+                            }
+                        }, 500); // Give the flash 0.5s time before the transition kicks in
+
+                        setTimeout(() => {
+                            gameWin.classList.remove("screen-shake");
+                            flash.remove();
+                            sw.remove();
+                        }, 1200);
+                    }
+                    if (playerEl) {
+                        playerEl.classList.add("bump");
+                        setTimeout(() => playerEl.classList.remove("bump"), 500);
+                    }
+                    if (el) {
+                        el.classList.add("bump");
+                        setTimeout(() => el.classList.remove("bump"), 500);
+                    }
+                }
+
                 function startBattle(npc) {
                     if (isBattleStarting) return;
+
+                    // Remove map effects when starting battle
+                    const gameWin = document.getElementById("rpg-game-window");
+                    if (gameWin) gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+
+                    const cameraEl = document.getElementById("rpg-camera");
+                    const mapTrans = document.getElementById("map-transition");
+
+                    // Find NPC element
+                    let npcEl = null;
+                    if (npcLayer) {
+                        const idx = npcs.indexOf(npc);
+                        if (idx !== -1) npcEl = npcLayer.children[idx];
+                    }
+                    triggerBumpEffect(npcEl);
 
                     const enemyData = ENEMIES[npc.enemyId];
                     if (!enemyData) return;
@@ -9419,9 +9621,19 @@
                     update("vs-enemy-sprite", currentEnemy.sprite);
                     update("vs-player-sprite", player.sprite);
 
-                    const transIn = document.getElementById("battle-transition-in");
-                    if (transIn) transIn.classList.add("active");
+                    // ===== BATTLE PANELS SEQUENCE =====
+                    // 0ms: Panels start opening
+                    const battlePanels = document.getElementById("battle-panels");
+                    if (battlePanels) {
+                        battlePanels.classList.add("active", "open");
+                    }
 
+                    // SHOW MAP-TRANSITION IMMEDIATELY (Flash Phase 0ms) - even though panels will hide it
+                    if (mapTrans) {
+                        mapTrans.classList.add("active", "battle-hold", "no-content");
+                    }
+
+                    // Timeline: Panels open(0-600ms) → Zoom(500-1700ms) → Screen swap(900ms) → Panels close(1050-1650ms) → VS-Splash(1300ms)
                     battleStartTimeout = setTimeout(() => {
                         showScreen("rpg-battle-screen");
                         update("battle-enemy-name", currentEnemy.name);
@@ -9434,15 +9646,63 @@
 
                         updateBattleUI();
                         parseEmojis(document.getElementById("rpg-battle-screen"));
-                    }, 700);
 
-                    setTimeout(() => {
-                        if (transIn) transIn.classList.remove("active");
-                        const vsSplash = document.getElementById("battle-vs-splash");
-                        if (vsSplash) vsSplash.classList.add("active");
+                        // 1050ms: Start closing panels
+                        setTimeout(() => {
+                            if (battlePanels) {
+                                battlePanels.classList.remove("open");
+                                battlePanels.classList.add("close");
+                            }
+
+                            // 1300ms: Show VS-Splash after panels are closing
+                            setTimeout(() => {
+                                const vsSplash = document.getElementById("battle-vs-splash");
+                                const vsMessage = document.getElementById("vs-message");
+                                const bossBanner = document.getElementById("boss-vs-banner");
+                                
+                                // Set VS message
+                                if (vsMessage && currentEnemy.vsMessage) {
+                                    vsMessage.innerText = currentEnemy.vsMessage;
+                                    vsMessage.style.display = "block";
+                                } else if (vsMessage) {
+                                    vsMessage.style.display = "none";
+                                }
+                                
+                                // Set Boss special banner
+                                if (bossBanner && currentEnemy.isBoss) {
+                                    bossBanner.innerText = "⚔️ BOSS FIGHT ⚔️";
+                                    bossBanner.style.display = "block";
+                                } else if (bossBanner) {
+                                    bossBanner.style.display = "none";
+                                }
+                                
+                                if (vsSplash) vsSplash.classList.add("active");
+                                if (mapTrans) {
+                                    mapTrans.classList.remove("active", "opening");
+                                }
+                            }, 250); // 1050 + 250 = 1300
+                        }, 150); // Wait 150ms before closing panels
+
                     }, 900);
 
+                    // Clean up zoom and complete battle setup after all animations
                     setTimeout(() => {
+                        // Reset camera zoom after enough time for animation
+                        if (cameraEl) {
+                            cameraEl.classList.remove("battle-zoom-in", "battle-spiral-blur");
+                            cameraEl.style.transformOrigin = "";
+                            cameraEl.style.transform = "";
+                        }
+
+                        // Hide transition and panels completely
+                        if (mapTrans) {
+                            mapTrans.classList.remove("active", "battle-hold", "opening", "no-content");
+                        }
+
+                        if (battlePanels) {
+                            battlePanels.classList.remove("active", "open", "close");
+                        }
+
                         const vsSplash = document.getElementById("battle-vs-splash");
                         if (vsSplash) vsSplash.classList.remove("active");
 
@@ -9460,7 +9720,7 @@
                         }
 
                         setTimeout(() => showTurn("Dein Zug!", true), 300);
-                    }, 3000);
+                    }, 2700);
                 }
 
                 function updateBattleUI() {
@@ -9568,13 +9828,19 @@
                     if (!list) return;
                     list.innerHTML = "";
 
-                    const skills = [
+                    const allSkills = [
                         { id: "tacker", name: "Tacker-Angriff", icon: "📎", cost: 4 },
                         { id: "kaffee", name: "Kaffee-Wurf", icon: "☕", cost: 6 },
-                        { id: "meeting", name: "Meeting einberufen", icon: "📊", cost: 8 }
+                        { id: "meeting", name: "Meeting einberufen", icon: "📊", cost: 8 },
+                        { id: "papier", name: "Papier-Papiertiger", icon: "📄", cost: 5 },
+                        { id: "fax", name: "Fax-Blitz", icon: "📠", cost: 7 },
+                        { id: "printer", name: "Drucker-Crash", icon: "🖨️", cost: 9 }
                     ];
 
-                    skills.forEach(skill => {
+                    const unlockedSkills = player.unlockedSkills || ["tacker", "kaffee", "meeting"];
+                    const availableSkills = allSkills.filter(skill => unlockedSkills.includes(skill.id));
+
+                    availableSkills.forEach(skill => {
                         const row = document.createElement("div");
                         row.className = "skill-row";
                         row.dataset.skill = skill.id;
@@ -9590,7 +9856,10 @@
                     const skills = {
                         tacker: { cost: 4, dmgMult: 2, icon: "📎", name: "Tacker-Angriff" },
                         kaffee: { cost: 6, dmgMult: 2.5, icon: "☕", name: "Kaffee-Wurf" },
-                        meeting: { cost: 8, dmgMult: 3, icon: "📊", name: "Meeting einberufen" }
+                        meeting: { cost: 8, dmgMult: 3, icon: "📊", name: "Meeting einberufen" },
+                        papier: { cost: 5, dmgMult: 2.2, icon: "📄", name: "Papier-Papiertiger" },
+                        fax: { cost: 7, dmgMult: 2.8, icon: "📠", name: "Fax-Blitz" },
+                        printer: { cost: 9, dmgMult: 3.2, icon: "🖨️", name: "Drucker-Crash" }
                     };
 
                     const skill = skills[skillId];
@@ -9786,6 +10055,29 @@
                     }
                 }
 
+                function animateXPCounter(startValue, endValue, maxValue, duration) {
+                    const xpCurrentEl = document.getElementById("xp-current");
+                    if (!xpCurrentEl) return;
+
+                    const startTime = Date.now();
+                    const update = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+
+                    function animateFrame() {
+                        const now = Date.now();
+                        const progress = Math.min((now - startTime) / duration, 1);
+                        const currentValue = Math.floor(startValue + (endValue - startValue) * progress);
+                        update("xp-current", currentValue);
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animateFrame);
+                        } else {
+                            update("xp-current", endValue);
+                        }
+                    }
+
+                    animateFrame();
+                }
+
                 function enemyTurn() {
                     if (gameState !== "BATTLE") return;
 
@@ -9822,6 +10114,12 @@
                     update("victory-gold", currentEnemy.gold);
                     update("victory-exp", currentEnemy.exp);
 
+                    // Calculate XP before adding
+                    const oldLvl = player.lvl;
+                    const oldExp = player.exp;
+                    const oldExpNext = player.expNext;
+                    const gainedExp = currentEnemy.exp;
+
                     player.gold += currentEnemy.gold;
                     player.exp += currentEnemy.exp;
 
@@ -9836,10 +10134,38 @@
                         leveledUp = true;
                     }
 
+                    // Setup XP bar animation
+                    const xpBarContainer = document.getElementById("xp-bar-container");
+                    const xpBarFill = document.getElementById("xp-bar-fill");
+                    const xpCurrentEl = document.getElementById("xp-current");
+                    const xpMaxEl = document.getElementById("xp-max");
+                    
+                    if (xpBarContainer && xpBarFill) {
+                        xpBarContainer.classList.add("visible");
+                        update("xp-current", oldExp);
+                        update("xp-max", oldExpNext);
+                        
+                        // Animate XP bar fill and numbers after short delay
+                        setTimeout(() => {
+                            const newExpValue = oldExp + gainedExp;
+                            const newExpPercent = newExpValue / oldExpNext * 100;
+                            
+                            // Animate bar width
+                            xpBarFill.style.width = Math.min(newExpPercent, 100) + "%";
+                            
+                            // Animate XP numbers
+                            animateXPCounter(oldExp, newExpValue, oldExpNext, 800);
+                        }, 300);
+                    }
+
                     const levelupDisplay = document.getElementById("levelup-display");
                     if (leveledUp) {
+                        update("old-level", oldLvl);
                         update("new-level", player.lvl);
-                        if (levelupDisplay) levelupDisplay.classList.add("visible");
+                        // Delay levelup display until after XP bar animation
+                        setTimeout(() => {
+                            if (levelupDisplay) levelupDisplay.classList.add("visible");
+                        }, 1100);
                     } else {
                         if (levelupDisplay) levelupDisplay.classList.remove("visible");
                     }
@@ -9872,6 +10198,9 @@
                     const npcIdx = npcs.findIndex(n => n.x === npc.x && n.y === npc.y && n.enemyId === npc.enemyId);
                     if (npcIdx > -1) npcs.splice(npcIdx, 1);
                     spawnNPCs();
+
+                    // Reset XP bar for fresh animation
+                    if (xpBarFill) xpBarFill.style.width = "0%";
 
                     const victoryScreen = document.getElementById("victory-screen");
                     if (victoryScreen) { victoryScreen.classList.add("visible"); parseEmojis(victoryScreen); }
@@ -9949,6 +10278,17 @@
                         showScreen("rpg-game-screen");
                         updateHUD();
                         startCameraLoop();
+                        startNPCMovementLoop(); // Restart NPC movement upon return to map
+                        
+                        // Immediately restore map effects when battle screen shows
+                        const gameWin = document.getElementById("rpg-game-window");
+                        if (gameWin) {
+                            gameWin.classList.remove("effect-particles", "effect-dim", "effect-windows");
+                            if (currentMapId === "flur") gameWin.classList.add("effect-particles");
+                            else if (currentMapId === "boss_office") gameWin.classList.add("effect-dim");
+                            else if (currentMapId === "buero" || currentMapId === "zentrale") gameWin.classList.add("effect-windows");
+                            else if (currentMapId === "kantine") gameWin.classList.add("effect-windows");
+                        }
                     }, 450);
 
                     setTimeout(() => {
@@ -10005,6 +10345,10 @@
                     }
 
                     keysHeld[e.key] = true;
+                    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "w", "a", "s", "d", "W", "A", "S", "D"].includes(e.key)) {
+                        directionHistory = directionHistory.filter(k => k !== e.key);
+                        directionHistory.push(e.key);
+                    }
 
                     if (e.key === "Escape") {
                         e.preventDefault();
@@ -10089,16 +10433,37 @@
 
                 document.addEventListener("keyup", (e) => {
                     delete keysHeld[e.key];
+                    directionHistory = directionHistory.filter(k => k !== e.key);
                     const moveKeys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "w", "a", "s", "d", "W", "A", "S", "D"];
                     if (!Object.keys(keysHeld).some(k => moveKeys.includes(k))) stopMoveLoop();
                 });
 
                 function processHeldKeys() {
                     if (cheatConsoleVisible || isMoving) return;
-                    if (keysHeld["ArrowUp"] || keysHeld["w"] || keysHeld["W"]) tryMove(0, -1);
-                    else if (keysHeld["ArrowDown"] || keysHeld["s"] || keysHeld["S"]) tryMove(0, 1);
-                    else if (keysHeld["ArrowLeft"] || keysHeld["a"] || keysHeld["A"]) tryMove(-1, 0);
-                    else if (keysHeld["ArrowRight"] || keysHeld["d"] || keysHeld["D"]) tryMove(1, 0);
+
+                    let moveKey = null;
+                    // Check direction history (stack) for most recent key
+                    for (let i = directionHistory.length - 1; i >= 0; i--) {
+                        if (keysHeld[directionHistory[i]]) {
+                            moveKey = directionHistory[i];
+                            break;
+                        }
+                    }
+
+                    // Fallback for Touch controls (which set keysHeld but not history)
+                    if (!moveKey) {
+                        if (keysHeld["ArrowUp"]) moveKey = "ArrowUp";
+                        else if (keysHeld["ArrowDown"]) moveKey = "ArrowDown";
+                        else if (keysHeld["ArrowLeft"]) moveKey = "ArrowLeft";
+                        else if (keysHeld["ArrowRight"]) moveKey = "ArrowRight";
+                    }
+
+                    if (moveKey) {
+                        if (["ArrowUp", "w", "W"].includes(moveKey)) tryMove(0, -1);
+                        else if (["ArrowDown", "s", "S"].includes(moveKey)) tryMove(0, 1);
+                        else if (["ArrowLeft", "a", "A"].includes(moveKey)) tryMove(-1, 0);
+                        else if (["ArrowRight", "d", "D"].includes(moveKey)) tryMove(1, 0);
+                    }
                 }
 
                 function startMoveLoop() {
