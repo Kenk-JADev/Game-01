@@ -7434,7 +7434,7 @@
                         ],
                         chests: [{ x: 2, y: 16, type: "normal" }, { x: 17, y: 3, type: "rare" }],
                         npcs: [
-                            { x: 16, y: 10, type: "talk", sprite: "👨‍💼", name: "Andreas", role: "Verkauf", dialog: ["Guten Tag!"], wander: true },
+                            { x: 16, y: 10, type: "talk", sprite: "👨‍💼", name: "Andreas", role: "Verkauf", dialog: ["Guten Tag!"], choiceId: "andreas_quest", choicePrompt: "Ich suche etwas...", wander: true },
                             { x: 5, y: 5, type: "enemy", sprite: "📞", name: "Telefonterror", enemyId: "telefon", wander: true },
                             { x: 15, y: 15, type: "enemy", sprite: "📧", name: "Spam-Mail", enemyId: "spam" },
                             { x: 15, y: 5, type: "enemy", sprite: "📉", name: "Excel-Fehler", enemyId: "excel" },
@@ -7723,6 +7723,7 @@
                     lastMoveTimestamp = now;
                     player.x = nx;
                     player.y = ny;
+                    if (typeof checkSecretDocumentTile === "function") checkSecretDocumentTile();
 
                     playerEl.classList.add("walking");
                     playerEl.style.transition = `left ${MOVE_DURATION}ms linear, top ${MOVE_DURATION}ms linear`;
@@ -8913,6 +8914,8 @@
                         queueMessage(npc.choicePrompt || "Kann ich dir helfen?", npc.name, npc.sprite, () => openJustinChoice(npc));
                     } else if (npc.choiceId === "sertac_coffee") {
                         queueMessage(npc.choicePrompt || "Holst du mir Kaffee?", npc.name, npc.sprite, () => openSertacChoice(npc));
+                    } else if (npc.choiceId === "andreas_quest") {
+                        queueMessage(npc.choicePrompt || "Ich suche etwas...", npc.name, npc.sprite, () => openAndreasChoice(npc));
                     }
                 }
 
@@ -8954,6 +8957,122 @@
                         }
                         showMessage("Schon gut, vergiss es...", npc.name, npc.sprite);
                     });
+                }
+
+                function openAndreasChoice(npc) {
+                    if (typeof window.showChoice !== "function") return;
+                    
+                    // Initialize quest state if not exists
+                    if (!player.questState) player.questState = {};
+                    
+                    // Quest states: null, active, completed, rewards_claimed
+                    const questState = player.questState.andreasQuest || null;
+                    
+                    if (questState === null || questState === undefined) {
+                        // Start quest
+                        window.showChoice("Hör zu... Ich habe ein sehr wichtiges Dokument verloren. Es liegt irgendwo im Büro herum. Könntest du es für mich finden?", [
+                            { label: "Ja, helfe dir gerne!", value: "accept", hint: "✅" },
+                            { label: "Nein, viel zu umständlich.", value: "decline", hint: "❌" }
+                        ], npc.name, npc.sprite, (val) => {
+                            if (val === "accept") {
+                                player.questState.andreasQuest = "active";
+                                showMessage("Wunderbar! Das Dokument ist wichtig für meine Präsentation. Ich gebe dir einen Hinweis: Es liegt nicht weit von meinem Schreibtisch entfernt. 📄", npc.name, npc.sprite);
+                                queueMessage("Quest gestartet: Finde das Geheime Dokument!", "📋 System", "📋");
+                            } else {
+                                showMessage("Schade... falls du es dir anders überlegst, bin ich hier.", npc.name, npc.sprite);
+                            }
+                        });
+                    } else if (questState === "active") {
+                        // Check if player has the document
+                        if (hasItem("geheimes_dokument", 1)) {
+                            window.showChoice("Hast du mein Dokument gefunden?", [
+                                { label: "Ja, hier ist es!", value: "turn_in", hint: "📄" },
+                                { label: "Noch nicht, suche weiter...", value: "not_yet", hint: "🔍" }
+                            ], npc.name, npc.sprite, (val) => {
+                                if (val === "turn_in") {
+                                    if (consumeItem("geheimes_dokument", 1)) {
+                                        player.questState.andreasQuest = "completed";
+                                        showMessage("Perfekt! Das ist genau das, was ich brauchte! 🎉", npc.name, npc.sprite);
+                                        queueMessage("Als Dankeschön möchte ich dir etwas Besonderes beibringen...", npc.name, npc.sprite, () => {
+                                            // Award special skill
+                                            if (!player.unlockedSkills.includes("ueberstunden")) {
+                                                player.unlockedSkills.push("ueberstunden");
+                                                showMessage("Du hast die exklusive Fähigkeit 'Überstunden-Boost' gelernt! 💪", "📋 System", "📋");
+                                                queueMessage("Mit dieser Fähigkeit kannst du alle deine Statuswerte temporär stark erhöhen!", "📋 System", "📋");
+                                            } else {
+                                                showMessage("Du hast bereits diese Fähigkeit gelernt. Hier sind 100 Gold als Entschädigung! 💰", npc.name, npc.sprite);
+                                                player.gold += 100;
+                                                updateHUD();
+                                            }
+                                        });
+                                    } else {
+                                        showMessage("Du hast das Dokument nicht!", npc.name, npc.sprite);
+                                    }
+                                } else {
+                                    showMessage("Kein Problem, nimm dir Zeit. Es liegt irgendwo im Büro.", npc.name, npc.sprite);
+                                }
+                            });
+                        } else {
+                            window.showChoice("Hast du mein Dokument gefunden?", [
+                                { label: "Nein, noch nicht...", value: "not_yet", hint: "🔍" }
+                            ], npc.name, npc.sprite, (val) => {
+                                showMessage("Kein Problem! Tipp: Ich habe es heute Morgen irgendwo im Büro liegen lassen. Schau in alle Ecken! 🔍", npc.name, npc.sprite);
+                            });
+                        }
+                    } else if (questState === "completed") {
+                        showMessage("Danke nochmals für deine Hilfe! Diese Fähigkeit wird dir bestimmt nützlich sein. 💪", npc.name, npc.sprite);
+                    }
+
+                // Quest helper functions
+                function hasItem(itemId, amount = 1) {
+                    const it = player.inventory.find(i => i.id === itemId && i.count >= amount);
+                    return !!it;
+                }
+
+                function consumeItem(itemId, amount = 1) {
+                    const it = player.inventory.find(i => i.id === itemId && i.count > 0);
+                    if (!it) return false;
+                    it.count -= amount;
+                    if (it.count <= 0) {
+                        player.inventory = player.inventory.filter(i => i !== it);
+                    }
+                    updateHUD();
+                    return true;
+                }
+
+                function addItemToInventory(itemId, amount = 1) {
+                    const existing = player.inventory.find(i => i.id === itemId);
+                    if (existing) {
+                        existing.count += amount;
+                    } else {
+                        player.inventory.push({ id: itemId, count: amount });
+                    }
+                    updateHUD();
+                }
+
+                // Secret Document Quest Item - spawn on random positions
+                window.checkSecretDocumentTile = function() {
+                    if (!player.questState || player.questState.andreasQuest !== "active") return;
+                    if (hasItem("geheimes_dokument", 1)) return;
+                    
+                    const secretSpots = [
+                        { x: 3, y: 3, name: "unter dem Schreibtisch" },
+                        { x: 18, y: 2, name: "im Aktenregal" },
+                        { x: 2, y: 15, name: "hinter der Pflanze" },
+                        { x: 15, y: 14, name: "im Kopierer" },
+                        { x: 8, y: 18, name: "in der Schublade" },
+                        { x: 19, y: 9, name: "am Whiteboard" }
+                    ];
+                    
+                    secretSpots.forEach(spot => {
+                        if (player.x === spot.x && player.y === spot.y && Math.random() < 0.2) {
+                            showMessage(`Du findest etwas! Es ist Andreas' geheimes Dokument! 📄`, "💡 Entdeckung", "🔍");
+                            queueMessage("Das muss zu Andreas! Beeile dich zurück.", "💡 Entdeckung", "🔍", () => {
+                                addItemToInventory("geheimes_dokument", 1);
+                            });
+                        }
+                    });
+                }
                 }
 
                 function hasAndConsumeItem(itemId, amount = 1) {
@@ -9859,7 +9978,8 @@
                         meeting: { cost: 8, dmgMult: 3, icon: "📊", name: "Meeting einberufen" },
                         papier: { cost: 5, dmgMult: 2.2, icon: "📄", name: "Papier-Papiertiger" },
                         fax: { cost: 7, dmgMult: 2.8, icon: "📠", name: "Fax-Blitz" },
-                        printer: { cost: 9, dmgMult: 3.2, icon: "🖨️", name: "Drucker-Crash" }
+                        printer: { cost: 9, dmgMult: 3.2, icon: "🖨️", name: "Drucker-Crash" },
+                        ueberstunden: { cost: 12, dmgMult: 0, icon: "💪", name: "Überstunden-Boost", type: "buff" }
                     };
 
                     const skill = skills[skillId];
