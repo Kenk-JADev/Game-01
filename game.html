@@ -9953,7 +9953,8 @@
                         { id: "meeting", name: "Meeting einberufen", icon: "📊", cost: 8 },
                         { id: "papier", name: "Papier-Papiertiger", icon: "📄", cost: 5 },
                         { id: "fax", name: "Fax-Blitz", icon: "📠", cost: 7 },
-                        { id: "printer", name: "Drucker-Crash", icon: "🖨️", cost: 9 }
+                        { id: "printer", name: "Drucker-Crash", icon: "🖨️", cost: 9 },
+                        { id: "ueberstunden", name: "Überstunden-Boost", icon: "💪", cost: 12 },
                     ];
 
                     const unlockedSkills = player.unlockedSkills || ["tacker", "kaffee", "meeting"];
@@ -9998,11 +9999,36 @@
 
                     setTimeout(() => {
                         if (playerSprite) playerSprite.classList.remove("skill");
-                        const dmg = Math.max(1, Math.floor(player.atk * skill.dmgMult + Math.random() * 15) - currentEnemy.def);
-                        damageEnemy(dmg, false);
-                        battleLog(`${skill.name}! ${skill.icon} ${dmg} Schaden!`);
-                        spawnBattleEffect("enemy", skill.icon);
-                        checkBattleEnd();
+                        
+                        // Handle buff skills differently
+                        if (skill.type === "buff") {
+                            // Überstunden-Boost: Increase stats temporarily
+                            const atkBoost = Math.floor(player.atk * 0.5);
+                            const defBoost = Math.floor(player.def * 0.5);
+                            player.atk += atkBoost;
+                            player.def += defBoost;
+                            
+                            battleLog(`${skill.name}! ${skill.icon} Angriff +${atkBoost}, Verteidigung +${defBoost}!`);
+                            spawnBattleEffect("player", skill.icon);
+                            updateBattleUI();
+                            
+                            // Stats return to normal after enemy's turn
+                            setTimeout(() => {
+                                player.atk -= atkBoost;
+                                player.def -= defBoost;
+                                battleLog("Überstunden-Boost ist vorbei. Statuswerte normalisiert.");
+                                updateBattleUI();
+                            }, 3000);
+                            
+                            setTimeout(enemyTurn, 800);
+                        } else {
+                            // Normal damage skill
+                            const dmg = Math.max(1, Math.floor(player.atk * skill.dmgMult + Math.random() * 15) - currentEnemy.def);
+                            damageEnemy(dmg, false);
+                            battleLog(`${skill.name}! ${skill.icon} ${dmg} Schaden!`);
+                            spawnBattleEffect("enemy", skill.icon);
+                            checkBattleEnd();
+                        }
                     }, 500);
                 }
 
