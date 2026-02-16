@@ -6591,7 +6591,7 @@
 
         .contract-paper {
             width: min(560px, 92vw);
-            max-height: calc(100vh - 250px);
+            max-height: calc(100vh - 180px);
             overflow: auto;
             padding: 16px 18px;
             background: linear-gradient(180deg, #f8f4e8 0%, #f0ebe0 50%, #e8e2d5 100%);
@@ -7897,7 +7897,7 @@
                 let isMoving = false;
                 let lastMoveTimestamp = 0;
                 const MOVE_DURATION = 120;
-                const MOVE_COOLDOWN = 100;
+                const MOVE_COOLDOWN = 60;
 
                 const DEPT_NAMES = { einkauf: "Einkauf", verkauf: "Verkauf", zentrale: "Zentrale", verwaltung: "Verwaltung" };
                 const GENDER_SPRITES = { m: "🧑‍💼", f: "👩‍💼" };
@@ -8099,11 +8099,30 @@
                 }
 
                 function canAccessBoss() {
-                    const flurEnemies = MAPS.flur?.npcs?.filter(n => n.type === "enemy" && !n.isBoss) || [];
-                    return flurEnemies.every(npc => {
-                        const key = `flur_${npc.x}_${npc.y}_${npc.enemyId}`;
-                        return defeatedEnemies.has(key);
+                    // Count total enemies that need to be defeated across all maps
+                    let totalEnemies = 0;
+                    let defeatedCount = 0;
+                    
+                    // Check all maps for enemies
+                    const mapsToCheck = ["flur", "buero", "zentrale", "kantine", "lager", "konferenz", "serverraum"];
+                    
+                    mapsToCheck.forEach(mapId => {
+                        const mapData = MAPS[mapId];
+                        if (mapData && mapData.npcs) {
+                            const enemies = mapData.npcs.filter(n => n.type === "enemy" && !n.isBoss);
+                            enemies.forEach(npc => {
+                                totalEnemies++;
+                                const key = `${mapId}_${npc.x}_${npc.y}_${npc.enemyId}`;
+                                if (defeatedEnemies.has(key)) {
+                                    defeatedCount++;
+                                }
+                            });
+                        }
                     });
+                    
+                    // Require at least 10 enemies defeated to enter boss room
+                    const minRequired = Math.min(10, totalEnemies);
+                    return defeatedCount >= minRequired;
                 }
 
                 function handleDoor(x, y, tileData) {
@@ -8344,6 +8363,11 @@
                 function resetGame() {
                     stopCameraLoop();
                     stopNPCMovementLoop();
+
+                    // Hide quit modal if visible
+                    const quitModal = document.getElementById('quit-modal');
+                    if (quitModal) quitModal.style.display = 'none';
+
                     gameState = "SPLASH";
                     player = {
                         name: "Held", x: 5, y: 7, hp: 100, maxHp: 100, mp: 10, maxMp: 10,
@@ -10890,7 +10914,7 @@
                         if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "w", "a", "s", "d", "W", "A", "S", "D"].includes(e.key)) {
                             e.preventDefault();
                             processHeldKeys();
-                            setTimeout(() => { if (keysHeld[e.key]) startMoveLoop(); }, 150);
+                            setTimeout(() => { if (keysHeld[e.key]) startMoveLoop(); }, 80);
                         }
                         return;
                     }
@@ -10952,7 +10976,7 @@
                 }
 
                 function startMoveLoop() {
-                    if (!moveInterval && gameState === "MAP") moveInterval = setInterval(processHeldKeys, 130);
+                    if (!moveInterval && gameState === "MAP") moveInterval = setInterval(processHeldKeys, 90);
                 }
 
                 function stopMoveLoop() {
