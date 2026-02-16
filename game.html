@@ -897,16 +897,23 @@
         .zuef-centered-col {
             width: 100%;
             max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            perspective: 1000px;
+
+        /* Explicit visible class to keep message visible until we remove it intentionally
+           This avoids the message disappearing early if .active is toggled on the parent. */
+        .vs-message.visible {
+            opacity: 1 !important;
+            pointer-events: none;
         }
 
-        .zuef-premium-card {
-            width: 100%;
-            margin-bottom: 25px;
-            cursor: pointer;
+        #battle-vs-splash.active .vs-message {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #battle-vs-splash:not(.active) .vs-message {
+            opacity: 0;
+            pointer-events: none;
+        }
             transform-style: preserve-3d;
             transition: transform 0.1s;
         }
@@ -2646,19 +2653,59 @@
         }
 
         @keyframes walkBounce {
-
             0%,
             100% {
                 transform: translateY(0)
             }
-
             50% {
                 transform: translateY(-4px)
             }
         }
 
+        /* Battle animations */
+        @keyframes battleShake {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            10% { transform: translateX(-3px) translateY(-2px); }
+            20% { transform: translateX(3px) translateY(2px); }
+            30% { transform: translateX(-3px) translateY(2px); }
+            40% { transform: translateX(3px) translateY(-2px); }
+            50% { transform: translateX(-2px) translateY(-2px); }
+            60% { transform: translateX(2px) translateY(2px); }
+            70% { transform: translateX(-2px) translateY(2px); }
+            80% { transform: translateX(2px) translateY(-2px); }
+            90% { transform: translateX(-1px) translateY(-1px); }
+        }
+
+        @keyframes battleShakeHeavy {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            10% { transform: translateX(-5px) translateY(-3px); }
+            20% { transform: translateX(5px) translateY(3px); }
+            30% { transform: translateX(-5px) translateY(3px); }
+            40% { transform: translateX(5px) translateY(-3px); }
+            50% { transform: translateX(-4px) translateY(-3px); }
+            60% { transform: translateX(4px) translateY(3px); }
+            70% { transform: translateX(-3px) translateY(3px); }
+            80% { transform: translateX(3px) translateY(-2px); }
+            90% { transform: translateX(-2px) translateY(-2px); }
+        }
+
+        @keyframes battlePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotateZ(0deg); }
+            100% { transform: rotateZ(360deg); }
+        }
+
         #rpg-player.face-left .sprite-body {
             transform: scaleX(-1);
+        }
+
+        #rpg-player.face-right .sprite-body {
+            transform: scaleX(1);
         }
 
         /* ===== NPC SPRITES ===== */
@@ -3722,6 +3769,18 @@
             animation: vsScreenFade 2.6s forwards;
         }
 
+        /* Smooth programmatic fade when ending early/explicitly */
+        #battle-vs-splash.ending {
+            opacity: 0 !important;
+            transition: opacity 0.45s ease-in-out;
+            pointer-events: none;
+        }
+
+        #battle-vs-splash.ending .vs-message {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
         @keyframes vsScreenFade {
             0% {
                 opacity: 0
@@ -3974,7 +4033,9 @@
 
         #battle-vs-splash.active .vs-message {
             opacity: 1;
-            pointer-events: auto;
+            pointer-events: none;
+            user-select: none;
+            cursor: default;
         }
 
         #battle-vs-splash:not(.active) .vs-message {
@@ -4843,6 +4904,14 @@
             border: 2px solid #88f;
             border-radius: 10px;
             text-align: center;
+        }
+
+        /* Keep XP container width stable to avoid layout jumps on level-up */
+        #xp-bar-container {
+            width: min(520px, 92vw);
+            box-sizing: border-box;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         #xp-bar-container.visible {
@@ -6577,6 +6646,7 @@
             width: 100%;
             height: 100%;
             padding: 20px;
+            box-sizing: border-box;
         }
 
         .contract-wrapper {
@@ -6585,14 +6655,20 @@
             align-items: center;
             gap: 10px;
             width: 100%;
+            height: 100%;
             padding: 0 12px;
             box-sizing: border-box;
+            justify-content: center;
         }
 
         .contract-paper {
             width: min(560px, 92vw);
-            max-height: calc(100vh - 180px);
-            overflow: auto;
+            /* Responsive height - flex to use available space */
+            flex: 1;
+            max-height: 80vh;
+            min-height: 300px;
+            overflow-y: auto;
+            overflow-x: hidden;
             padding: 16px 18px;
             background: linear-gradient(180deg, #f8f4e8 0%, #f0ebe0 50%, #e8e2d5 100%);
             border-radius: 8px;
@@ -6600,6 +6676,7 @@
             font-family: 'VT323', monospace;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1), 0 16px 32px rgba(0, 0, 0, 0.15);
             position: relative;
+            box-sizing: border-box;
         }
 
         .contract-submit-btn {
@@ -7903,7 +7980,7 @@
                 const GENDER_SPRITES = { m: "🧑‍💼", f: "👩‍💼" };
                 const GENDER_TITLES = { m: "Auszubildender", f: "Auszubildende" };
 
-                // ===== SMOOTH MOVEMENT (FIXED - Keine doppelte Bewegung) =====
+                // ===== SMOOTH MOVEMENT - PROFESSIONAL DIRECTION SYSTEM =====
                 function smoothMove(dx, dy) {
                     const now = Date.now();
                     if (now - lastMoveTimestamp < MOVE_COOLDOWN) return false;
@@ -7916,10 +7993,17 @@
                     const mapRows = currentMap.length;
                     if (nx < 0 || nx >= mapCols || ny < 0 || ny >= mapRows) return false;
 
-                    if (dx < 0) { player.facing = "left"; playerEl.classList.add("face-left"); }
-                    else if (dx > 0) { player.facing = "right"; playerEl.classList.remove("face-left"); }
-                    else if (dy < 0) { player.facing = "up"; }
-                    else if (dy > 0) { player.facing = "down"; }
+                    // Professional direction system - only LEFT/RIGHT rotations
+                    if (dx < 0) {
+                        player.facing = "left";
+                        playerEl.classList.remove("face-right");
+                        playerEl.classList.add("face-left");
+                    } else if (dx > 0) {
+                        player.facing = "right";
+                        playerEl.classList.remove("face-left");
+                        playerEl.classList.add("face-right");
+                    }
+                    // Vertical movement does NOT change player direction
 
                     const tile = currentMap[ny] ? currentMap[ny][nx] : 1;
                     const tileData = TILES[tile] || {};
@@ -10114,8 +10198,27 @@
 
                         const enemySprite = document.getElementById("battle-enemy-sprite");
                         const playerSprite = document.getElementById("battle-player-sprite");
-                        if (enemySprite) enemySprite.className = "";
-                        if (playerSprite) { playerSprite.className = ""; playerSprite.innerText = player.sprite; }
+                        
+                        // Reset enemy sprite completely
+                        if (enemySprite) {
+                            enemySprite.className = "";
+                            enemySprite.style.cssText = "";
+                            enemySprite.style.transition = "none";
+                            enemySprite.style.transform = "scale(1)";
+                            enemySprite.style.opacity = "1";
+                            enemySprite.style.filter = "brightness(1)";
+                        }
+                        
+                        // Reset player sprite completely
+                        if (playerSprite) {
+                            playerSprite.className = "";
+                            playerSprite.style.cssText = "";
+                            playerSprite.style.transition = "none";
+                            playerSprite.style.transform = "scale(1)";
+                            playerSprite.style.opacity = "1";
+                            playerSprite.style.filter = "brightness(1)";
+                            playerSprite.innerText = player.sprite;
+                        }
 
                         updateBattleUI();
                         parseEmojis(document.getElementById("rpg-battle-screen"));
@@ -10133,12 +10236,14 @@
                                 const vsMessage = document.getElementById("vs-message");
                                 const bossBanner = document.getElementById("boss-vs-banner");
                                 
-                                // Set VS message
+                                // Set VS message and mark it explicitly visible so it stays until splash ends
                                 if (vsMessage && currentEnemy.vsMessage) {
                                     vsMessage.innerText = currentEnemy.vsMessage;
                                     vsMessage.style.display = "block";
+                                    vsMessage.classList.add('visible');
                                 } else if (vsMessage) {
                                     vsMessage.style.display = "none";
+                                    vsMessage.classList.remove('visible');
                                 }
                                 
                                 // Set Boss special banner
@@ -10150,8 +10255,59 @@
                                 }
                                 
                                 if (vsSplash) {
+                                    // Set dynamic duration based on message length
                                     vsSplash.style.animationDuration = `${vsSplashDuration / 1000}s`;
+                                    // Ensure any previous handler is removed
+                                    vsSplash.removeEventListener('animationend', vsSplash._vsEndHandler);
+
+                                    // Add active to start the splash; remove after its own animation ends
                                     vsSplash.classList.add("active");
+
+                                    const onVsEnd = function (e) {
+                                        // Only proceed if the animationend event comes from the vsSplash element
+                                        if (e && e.target === vsSplash && e.animationName && e.animationName.indexOf('vsScreenFade') !== -1) {
+                                            // Start graceful fade using the 'ending' CSS rules
+                                            vsSplash.classList.add('ending');
+                                            // Let CSS handle vs-message fade; do not programmatically hide it here
+
+                                            // cleanup animationend listener
+                                            vsSplash.removeEventListener('animationend', onVsEnd);
+                                            delete vsSplash._vsEndHandler;
+
+                                            // When transition ends, fully remove active/ending
+                                            const onTransEnd = function (ev) {
+                                                if (ev && ev.propertyName === 'opacity') {
+                                                    try { document.getElementById('vs-message')?.classList.remove('visible'); } catch (e) {}
+                                                    vsSplash.classList.remove('active', 'ending');
+                                                    try { if (vsSplash._vsTimeout) { clearTimeout(vsSplash._vsTimeout); delete vsSplash._vsTimeout; } } catch (e) {}
+                                                    vsSplash.removeEventListener('transitionend', onTransEnd);
+                                                }
+                                            };
+                                            vsSplash.addEventListener('transitionend', onTransEnd);
+
+                                            // Fallback: ensure removal after timeout
+                                            setTimeout(() => {
+                                                try { document.getElementById('vs-message')?.classList.remove('visible'); } catch (e) {}
+                                                vsSplash.classList.remove('active', 'ending');
+                                                try { vsSplash.removeEventListener('transitionend', onTransEnd); } catch (e) {}
+                                                try { if (vsSplash._vsTimeout) { clearTimeout(vsSplash._vsTimeout); delete vsSplash._vsTimeout; } } catch (e) {}
+                                            }, 1200);
+                                        }
+                                    };
+                                    vsSplash._vsEndHandler = onVsEnd;
+                                    vsSplash.addEventListener('animationend', onVsEnd);
+                                    // Fallback deterministic removal based on computed duration
+                                    try {
+                                        if (vsSplash._vsTimeout) clearTimeout(vsSplash._vsTimeout);
+                                    } catch (e) {}
+                                    vsSplash._vsTimeout = setTimeout(() => {
+                                        // Ensure ending class then remove after transition buffer
+                                        vsSplash.classList.add('ending');
+                                        setTimeout(() => {
+                                            try { document.getElementById('vs-message')?.classList.remove('visible'); } catch (e) {}
+                                            vsSplash.classList.remove('active', 'ending');
+                                        }, 600);
+                                    }, vsSplashDuration + 120);
                                 }
                                 if (mapTrans) {
                                     mapTrans.classList.remove("active", "opening");
@@ -10180,7 +10336,30 @@
                         }
 
                         const vsSplash = document.getElementById("battle-vs-splash");
-                        if (vsSplash) vsSplash.classList.remove("active");
+                        if (vsSplash) {
+                            // Graceful programmatic fade-out: add 'ending' class and also fade the message
+                            vsSplash.classList.add('ending');
+                            // Let CSS handle vs-message fade; do not programmatically hide it here
+
+                            // ensure any previous animationend handler is cleaned
+                            if (vsSplash._vsEndHandler) {
+                                try { vsSplash.removeEventListener('animationend', vsSplash._vsEndHandler); } catch (e) {}
+                                delete vsSplash._vsEndHandler;
+                            }
+                            const removeNow = () => {
+                                try { document.getElementById('vs-message')?.classList.remove('visible'); } catch (e) {}
+                                if (vsSplash) { vsSplash.classList.remove('active'); vsSplash.classList.remove('ending'); }
+                            };
+                            // Remove after transitionend or fallback timeout
+                            const onTrans = function (ev) {
+                                if (ev && ev.propertyName === 'opacity') {
+                                    removeNow();
+                                    vsSplash.removeEventListener('transitionend', onTrans);
+                                }
+                            };
+                            vsSplash.addEventListener('transitionend', onTrans);
+                            setTimeout(removeNow, 900);
+                        }
 
                         isBattleStarting = false;
                         battleLocked = false;
@@ -10281,20 +10460,41 @@
 
                     setTimeout(() => {
                         if (playerSprite) playerSprite.classList.remove("attack");
-                        const baseDmg = player.atk + Math.floor(Math.random() * 10);
-                        const isCrit = Math.random() < 0.15;
-                        let dmg = Math.max(1, baseDmg - currentEnemy.def);
-                        if (isCrit) dmg = Math.floor(dmg * 1.8);
-
-                        damageEnemy(dmg, isCrit);
-
-                        if (isCrit) {
-                            battleLog("KRITISCHER TREFFER! " + dmg + " Schaden! 💥");
-                            spawnBattleEffect("enemy", "💥");
+                        
+                        // Miss chance (player) - reduce so player hits more often
+                        const missChance = Math.random() < 0.08;
+                        if (missChance) {
+                            battleLog("Daneben! Gegner ausgewichen! ❌");
+                            spawnBattleEffect("enemy", "❌");
+                            
+                            // Miss animation - enemy dodges
+                            const enemySprite = document.getElementById("battle-enemy-sprite");
+                            if (enemySprite) {
+                                enemySprite.style.transition = "all 0.2s ease-out";
+                                enemySprite.style.transform = "translateX(-30px) rotateZ(-15deg)";
+                                enemySprite.style.filter = "brightness(0.7)";
+                                setTimeout(() => {
+                                    enemySprite.style.transform = "translateX(0) rotateZ(0deg)";
+                                    enemySprite.style.filter = "brightness(1)";
+                                }, 200);
+                                setTimeout(() => { enemySprite.style.transition = "none"; }, 400);
+                            }
                         } else {
-                            battleLog("Angriff! " + dmg + " Schaden!");
-                        }
+                            // Normal attack
+                            const baseDmg = player.atk + Math.floor(Math.random() * 10);
+                            const isCrit = Math.random() < 0.15;
+                            let dmg = Math.max(1, baseDmg - currentEnemy.def);
+                            if (isCrit) dmg = Math.floor(dmg * 1.8);
 
+                            damageEnemy(dmg, isCrit);
+
+                            if (isCrit) {
+                                battleLog("KRITISCHER TREFFER! " + dmg + " Schaden! 💥");
+                                spawnBattleEffect("enemy", "💥");
+                            } else {
+                                battleLog("Angriff! " + dmg + " Schaden!");
+                            }
+                        }
                         checkBattleEnd();
                     }, 400);
                 }
@@ -10352,14 +10552,38 @@
                     player.mp -= skill.cost;
 
                     const playerSprite = document.getElementById("battle-player-sprite");
+                    const gameWin = document.getElementById("rpg-game-window");
                     if (playerSprite) playerSprite.classList.add("skill");
 
                     setTimeout(() => {
                         if (playerSprite) playerSprite.classList.remove("skill");
                         
+                        // Each skill has unique effects
+                        if (skillId === "tacker" && playerSprite) {
+                            playerSprite.style.transition = "none";
+                            playerSprite.style.transform = "translateX(-8px) rotate(-8deg)";
+                        } else if (skillId === "kaffee" && playerSprite) {
+                            playerSprite.style.transition = "all 0.3s";
+                            playerSprite.style.transform = "translateY(-15px) rotateZ(-15deg)";
+                            playerSprite.style.filter = "brightness(1.2)";
+                        } else if (skillId === "meeting" && playerSprite) {
+                            playerSprite.style.filter = "brightness(1.4)";
+                            playerSprite.style.transform = "scaleX(1.15) scaleY(1.15)";
+                            if (gameWin) gameWin.style.animation = "battlePulse 0.4s ease-out";
+                        } else if (skillId === "fax" && playerSprite) {
+                            playerSprite.style.filter = "brightness(2) drop-shadow(0 0 20px #ffff00)";
+                            playerSprite.style.transform = "scaleX(0.82) scaleY(1.25) rotateZ(-3deg)";
+                        } else if (skillId === "printer" && playerSprite) {
+                            playerSprite.style.animation = "spin 0.5s linear";
+                            playerSprite.style.filter = "brightness(1.6) drop-shadow(0 0 15px #ff6600)";
+                        } else if (skillId === "ueberstunden" && playerSprite) {
+                            playerSprite.style.transform = "scale(1.25) rotateZ(360deg)";
+                            playerSprite.style.filter = "brightness(1.9) drop-shadow(0 0 25px #00ff00)";
+                            playerSprite.style.transition = "all 0.4s ease-out";
+                        }
+                        
                         // Handle buff skills differently
                         if (skill.type === "buff") {
-                            // Überstunden-Boost: Increase stats temporarily
                             const atkBoost = Math.floor(player.atk * 0.5);
                             const defBoost = Math.floor(player.def * 0.5);
                             player.atk += atkBoost;
@@ -10369,23 +10593,31 @@
                             spawnBattleEffect("player", skill.icon);
                             updateBattleUI();
                             
-                            // Stats return to normal after enemy's turn
                             setTimeout(() => {
                                 player.atk -= atkBoost;
                                 player.def -= defBoost;
-                                battleLog("Überstunden-Boost ist vorbei. Statuswerte normalisiert.");
+                                battleLog("Überstunden-Boost vorbei!");
                                 updateBattleUI();
                             }, 3000);
                             
                             setTimeout(enemyTurn, 800);
                         } else {
-                            // Normal damage skill
                             const dmg = Math.max(1, Math.floor(player.atk * skill.dmgMult + Math.random() * 15) - currentEnemy.def);
                             damageEnemy(dmg, false);
                             battleLog(`${skill.name}! ${skill.icon} ${dmg} Schaden!`);
                             spawnBattleEffect("enemy", skill.icon);
                             checkBattleEnd();
                         }
+                        
+                        // Reset animations
+                        setTimeout(() => {
+                            if (playerSprite) {
+                                playerSprite.style.transition = "all 0.2s ease-out";
+                                playerSprite.style.transform = "translateX(0) scaleX(1) scaleY(1) rotateZ(0deg)";
+                                playerSprite.style.filter = "brightness(1)";
+                                playerSprite.style.animation = "none";
+                            }
+                        }, 100);
                     }, 500);
                 }
 
@@ -10476,6 +10708,15 @@
                         updateBattleMenu();
                     } else if (Math.random() > 0.35) {
                         battleLog("Flucht erfolgreich! 🏃");
+                        
+                        // Professional flee animation - player leaves screen
+                        const playerSprite = document.getElementById("battle-player-sprite");
+                        if (playerSprite) {
+                            playerSprite.style.transition = "transform 0.8s ease-in, opacity 0.8s ease-in";
+                            playerSprite.style.transform = "translateX(-200px) scale(0.8)";
+                            playerSprite.style.opacity = "0";
+                        }
+                        
                         setTimeout(endBattleToMap, 1000);
                     } else {
                         battleLog("Flucht gescheitert!");
@@ -10490,9 +10731,29 @@
                     showDmgPopup("battle-dmg-enemy", dmg, isCrit ? "#f4f" : "#ff0", isCrit);
 
                     const enemySprite = document.getElementById("battle-enemy-sprite");
+                    const gameWin = document.getElementById("rpg-game-window");
+                    
                     if (enemySprite) {
-                        enemySprite.classList.add("hit");
-                        setTimeout(() => enemySprite.classList.remove("hit"), 500);
+                        // Professional hit effect - intense knockback + dramatic glow
+                        enemySprite.style.transition = "none";
+                        const glowColor = isCrit ? "#ff00ff" : "#ffff00";
+                        enemySprite.style.filter = `brightness(${isCrit ? 1.8 : 1.5}) drop-shadow(0 0 ${isCrit ? 20 : 15}px ${glowColor})`;
+                        enemySprite.style.transform = isCrit ? "translateX(25px) scaleX(0.8) rotate(5deg)" : "translateX(18px) scaleX(0.85) rotate(3deg)";
+                        
+                        // Screen shake
+                        if (gameWin && isCrit) {
+                            gameWin.style.animation = "none";
+                            void gameWin.offsetWidth;
+                            gameWin.style.animation = "battleShakeHeavy 0.4s ease-in-out";
+                        }
+                        
+                        setTimeout(() => {
+                            enemySprite.style.transition = "all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
+                            enemySprite.style.filter = "brightness(1)";
+                            enemySprite.style.transform = "translateX(0) scaleX(1) rotate(0deg)";
+                        }, 70);
+                        
+                        setTimeout(() => { enemySprite.style.transition = "none"; }, 300);
                     }
 
                     if (currentEnemy.isBoss && currentEnemy.phases) {
@@ -10519,9 +10780,56 @@
                     showDmgPopup("battle-dmg-player", dmg, "#f44", false);
 
                     const playerSprite = document.getElementById("battle-player-sprite");
+                    const gameWin = document.getElementById("rpg-game-window");
+                    
                     if (playerSprite) {
-                        playerSprite.classList.add("hurt");
-                        setTimeout(() => playerSprite.classList.remove("hurt"), 400);
+                        // Professional hurt effect - knockback left + intense shake
+                        playerSprite.style.transition = "none";
+                        playerSprite.style.filter = "brightness(0.6) drop-shadow(0 0 15px #ff0000)";
+                        playerSprite.style.transform = "translateX(-20px) scaleX(0.85) rotate(-3deg)";
+                        
+                        // Screen shake effect
+                        if (gameWin) {
+                            gameWin.style.animation = "none";
+                            void gameWin.offsetWidth;
+                            gameWin.style.animation = "battleShake 0.3s ease-in-out";
+                        }
+                        
+                        setTimeout(() => {
+                            playerSprite.style.transition = "all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)";
+                            playerSprite.style.filter = "brightness(1)";
+                            playerSprite.style.transform = "translateX(0) scaleX(1) rotate(0deg)";
+                        }, 60);
+                        
+                        setTimeout(() => { playerSprite.style.transition = "none"; }, 250);
+                    }
+
+                    // If player died, play an enhanced death animation and particles, then show defeat
+                    if (player.hp <= 0) {
+                        const playerEl = document.getElementById("battle-player-sprite");
+                        if (playerEl) {
+                            playerEl.style.transition = "all 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
+                            playerEl.style.transform = "translateY(120px) rotateZ(360deg) rotateX(30deg) scale(0.3)";
+                            playerEl.style.opacity = "0";
+                            playerEl.style.filter = "brightness(0.2) blur(6px)";
+                        }
+
+                        // Particle burst and small flash
+                        spawnBattleEffect("player", "💥");
+                        setTimeout(() => spawnBattleEffect("player", "☠️"), 80);
+                        setTimeout(() => spawnBattleEffect("player", "💫"), 160);
+                        if (gameWin) {
+                            gameWin.style.transition = "none";
+                            gameWin.style.filter = "brightness(1.5)";
+                            setTimeout(() => { if (gameWin) gameWin.style.filter = ""; }, 160);
+                        }
+
+                        setTimeout(() => {
+                            const playerSpriteFinal = document.getElementById("battle-player-sprite");
+                            if (playerSpriteFinal) playerSpriteFinal.classList.add("death");
+                            setTimeout(showDefeat, 900);
+                        }, 200);
+                        return;
                     }
 
                     updateBattleUI();
@@ -10550,8 +10858,34 @@
                 function checkBattleEnd() {
                     if (enemyHp <= 0) {
                         const enemySprite = document.getElementById("battle-enemy-sprite");
-                        if (enemySprite) enemySprite.classList.add("death");
+                        if (enemySprite) {
+                            // ENHANCED defeat animation with multiple stages and particles
+                            enemySprite.style.transition = "all 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
+                            enemySprite.style.transform = "translateY(120px) rotateZ(720deg) scale(0.35) skewX(-8deg)";
+                            enemySprite.style.opacity = "0";
+                            enemySprite.style.filter = "brightness(0) blur(12px) saturate(0.3)";
+                            // small extra shake for emphasis
+                            const gameWin = document.getElementById("rpg-game-window");
+                            if (gameWin) {
+                                gameWin.style.animation = "none";
+                                void gameWin.offsetWidth;
+                                gameWin.style.animation = "battleShakeHeavy 0.45s ease-in-out";
+                                gameWin.style.transition = "none";
+                                gameWin.style.filter = "brightness(1.4)";
+                                setTimeout(() => { if (gameWin) gameWin.style.filter = ""; }, 140);
+                            }
+                        }
+                        
                         battleLog(currentEnemy.name + " wurde besiegt! 🎉");
+                        
+                        // Larger multi-particle celebration
+                        const particles = ["✨","⭐","💥","🎉","🔥","💫"];
+                        particles.forEach((p, i) => setTimeout(() => spawnBattleEffect("enemy", p), i * 90));
+
+                        // small loot burst: gold and exp pops
+                        setTimeout(() => spawnBattleEffect("enemy", "💰"), 600);
+                        setTimeout(() => spawnBattleEffect("enemy", "✦"), 680);
+
                         setTimeout(showVictory, 1200);
                     } else {
                         setTimeout(enemyTurn, 1000);
@@ -10588,40 +10922,73 @@
                     showTurn("Gegner-Zug!", false);
 
                     setTimeout(() => {
+                        // Enemy attack - add miss chance so enemies miss more often than player
+                        const enemyMiss = Math.random() < 0.20; // 20% miss for enemies
                         const baseDmg = currentEnemy.atk + Math.floor(Math.random() * 8);
                         const dmg = Math.max(1, baseDmg - player.def);
 
-                        damagePlayer(dmg);
-                        battleLog(currentEnemy.name + " greift an! " + dmg + " Schaden!");
-                        spawnBattleEffect("player", "💢");
-
-                        if (player.hp <= 0) {
+                        if (enemyMiss) {
+                            // Enemy missed - player dodges visually
+                            battleLog("Daneben! " + currentEnemy.name + " verfehlt! ❌");
+                            spawnBattleEffect("player", "❌");
                             const playerSprite = document.getElementById("battle-player-sprite");
-                            if (playerSprite) playerSprite.classList.add("death");
-                            setTimeout(showDefeat, 1000);
-                        } else {
+                            if (playerSprite) {
+                                playerSprite.style.transition = "all 0.25s ease-out";
+                                playerSprite.style.transform = "translateX(30px) rotateZ(12deg)";
+                                playerSprite.style.filter = "brightness(1.1)";
+                                setTimeout(() => {
+                                    playerSprite.style.transform = "translateX(0) rotateZ(0deg)";
+                                    playerSprite.style.filter = "brightness(1)";
+                                }, 250);
+                                setTimeout(() => { playerSprite.style.transition = "none"; }, 450);
+                            }
+
                             setTimeout(() => {
                                 isPlayerTurn = true;
                                 battleLocked = false;
                                 updateBattleMenu();
                                 showTurn("Dein Zug!", true);
-                            }, 1000);
+                            }, 800);
+                        } else {
+                            damagePlayer(dmg);
+                            battleLog(currentEnemy.name + " greift an! " + dmg + " Schaden!");
+                            spawnBattleEffect("player", "💢");
+
+                            if (player.hp > 0) {
+                                setTimeout(() => {
+                                    isPlayerTurn = true;
+                                    battleLocked = false;
+                                    updateBattleMenu();
+                                    showTurn("Dein Zug!", true);
+                                }, 1000);
+                            }
+                            // If player.hp <= 0, damagePlayer will handle death sequence and showDefeat timing.
                         }
                     }, 700);
                 }
 
                 function showVictory() {
+                    // Reset sprites for victory display
+                    const enemySprite = document.getElementById("battle-enemy-sprite");
+                    if (enemySprite) {
+                        enemySprite.style.transition = "none";
+                        enemySprite.style.opacity = "0";
+                    }
+                    
                     battleCount++;
 
                     const update = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
                     update("victory-gold", currentEnemy.gold);
-                    update("victory-exp", currentEnemy.exp);
+                    // Show gained exp and possible overflow (extra after leveling)
+                    const gainedExp = currentEnemy.exp;
+                    // We'll compute overflow later once we know oldExp/oldExpNext
+                    update("victory-exp", gainedExp);
 
                     // Calculate XP before adding
                     const oldLvl = player.lvl;
                     const oldExp = player.exp;
                     const oldExpNext = player.expNext;
-                    const gainedExp = currentEnemy.exp;
+                    // gainedExp already declared above
 
                     player.gold += currentEnemy.gold;
                     player.exp += currentEnemy.exp;
@@ -10647,17 +11014,21 @@
                         xpBarContainer.classList.add("visible");
                         update("xp-current", oldExp);
                         update("xp-max", oldExpNext);
-                        
-                        // Animate XP bar fill and numbers after short delay
+
+                        // First phase: animate to next-level cap (or final if no level)
                         setTimeout(() => {
-                            const newExpValue = oldExp + gainedExp;
-                            const newExpPercent = newExpValue / oldExpNext * 100;
-                            
-                            // Animate bar width
-                            xpBarFill.style.width = Math.min(newExpPercent, 100) + "%";
-                            
-                            // Animate XP numbers
-                            animateXPCounter(oldExp, newExpValue, oldExpNext, 800);
+                            const firstPhaseEnd = Math.min(oldExp + gainedExp, oldExpNext);
+                            const firstPercent = firstPhaseEnd / oldExpNext * 100;
+                            xpBarFill.style.width = Math.min(firstPercent, 100) + "%";
+                            animateXPCounter(oldExp, firstPhaseEnd, oldExpNext, 800);
+
+                            // If we overflowed and leveled up, show the leftover after levelup animation
+                            const overflow = Math.max(0, oldExp + gainedExp - oldExpNext);
+                            if (overflow > 0) {
+                                // update victory-exp display to show overflow e.g. "15 (+5)"
+                                update("victory-exp", `${gainedExp} (+${overflow})`);
+                            }
+
                         }, 300);
                     }
 
@@ -10665,9 +11036,23 @@
                     if (leveledUp) {
                         update("old-level", oldLvl);
                         update("new-level", player.lvl);
-                        // Delay levelup display until after XP bar animation
+                        // Delay levelup display until after XP bar first phase
                         setTimeout(() => {
                             if (levelupDisplay) levelupDisplay.classList.add("visible");
+
+                            // After showing levelup, animate leftover exp into the new bar
+                            setTimeout(() => {
+                                if (xpBarFill) {
+                                    // set new max and animate from 0 to current player.exp
+                                    update("xp-max", player.expNext);
+                                    update("xp-current", 0);
+                                    xpBarFill.style.width = Math.min((player.exp / player.expNext) * 100, 100) + "%";
+                                    animateXPCounter(0, player.exp, player.expNext, 800);
+                                }
+                                // hide levelup display after a brief moment
+                                if (levelupDisplay) setTimeout(() => levelupDisplay.classList.remove("visible"), 900);
+                            }, 700);
+
                         }, 1100);
                     } else {
                         if (levelupDisplay) levelupDisplay.classList.remove("visible");
@@ -10702,8 +11087,7 @@
                     if (npcIdx > -1) npcs.splice(npcIdx, 1);
                     spawnNPCs();
 
-                    // Reset XP bar for fresh animation
-                    if (xpBarFill) xpBarFill.style.width = "0%";
+                    // NOTE: do not reset XP bar here - keep visible until player closes victory
 
                     const victoryScreen = document.getElementById("victory-screen");
                     if (victoryScreen) { victoryScreen.classList.add("visible"); parseEmojis(victoryScreen); }
@@ -10713,17 +11097,40 @@
                     document.getElementById("victory-screen")?.classList.remove("visible");
                     document.getElementById("levelup-display")?.classList.remove("visible");
 
+                    // Reset XP bar visuals after victory screen closed
+                    const xpBarFill = document.getElementById("xp-bar-fill");
+                    const xpBarContainer = document.getElementById("xp-bar-container");
+                    if (xpBarFill) xpBarFill.style.width = "0%";
+                    if (xpBarContainer) xpBarContainer.classList.remove("visible");
+
                     if (currentEnemy.isBoss) showEnding();
                     else endBattleToMap();
                 };
 
                 function showDefeat() {
+                    // Reset player sprite for defeat display
+                    const playerSprite = document.getElementById("battle-player-sprite");
+                    if (playerSprite) {
+                        playerSprite.style.transition = "none";
+                        playerSprite.style.opacity = "0.5";
+                        playerSprite.style.filter = "grayscale(1)";
+                    }
+                    
                     const defeatScreen = document.getElementById("defeat-screen");
                     if (defeatScreen) defeatScreen.classList.add("visible");
                 }
 
                 window.respawnPlayer = function () {
                     document.getElementById("defeat-screen")?.classList.remove("visible");
+                    
+                    // Reset player sprite when respawning
+                    const playerSprite = document.getElementById("battle-player-sprite");
+                    if (playerSprite) {
+                        playerSprite.style.cssText = "";
+                        playerSprite.style.opacity = "1";
+                        playerSprite.style.filter = "brightness(1)";
+                        playerSprite.style.transition = "none";
+                    }
 
                     player.hp = Math.floor(player.maxHp / 2);
                     player.mp = player.maxMp;
@@ -10796,6 +11203,19 @@
 
                     setTimeout(() => {
                         if (transOut) transOut.classList.remove("active");
+                        
+                        // Reset battle sprites to clean state
+                        const enemySprite = document.getElementById("battle-enemy-sprite");
+                        const playerSprite = document.getElementById("battle-player-sprite");
+                        if (enemySprite) {
+                            enemySprite.style.cssText = "";
+                            enemySprite.style.transition = "none";
+                        }
+                        if (playerSprite) {
+                            playerSprite.style.cssText = "";
+                            playerSprite.style.transition = "none";
+                        }
+                        
                         isTransitioning = false;
 
                         // Reset message system for fresh start
