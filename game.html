@@ -10405,15 +10405,22 @@
                     const playerSprite = document.getElementById("battle-player-sprite");
                     if (playerSprite) playerSprite.classList.add("attack");
 
+                    // Sword trail effect during forward movement
+                    setTimeout(() => {
+                        spawnBattleEffect("player", "⚔️");
+                        // Add a second trail effect for more visual impact
+                        setTimeout(() => spawnBattleEffect("player", "✨"), 80);
+                    }, 150);
+
                     setTimeout(() => {
                         if (playerSprite) playerSprite.classList.remove("attack");
-                        
+
                         // Miss chance (player) - reduce so player hits more often
                         const missChance = Math.random() < 0.08;
                         if (missChance) {
                             battleLog("Daneben! Gegner ausgewichen! ❌");
                             spawnBattleEffect("enemy", "❌");
-                            
+
                             // Miss animation - enemy dodges
                             const enemySprite = document.getElementById("battle-enemy-sprite");
                             if (enemySprite) {
@@ -10427,7 +10434,11 @@
                                 setTimeout(() => { enemySprite.style.transition = "none"; }, 400);
                             }
                         } else {
-                            // Normal attack
+                            // Normal attack - Hit effect at enemy
+                            spawnBattleEffect("enemy", "💥");
+                            // Additional impact effect
+                            setTimeout(() => spawnBattleEffect("enemy", "⚡"), 100);
+
                             const baseDmg = player.atk + Math.floor(Math.random() * 10);
                             const isCrit = Math.random() < 0.15;
                             let dmg = Math.max(1, baseDmg - currentEnemy.def);
@@ -10437,7 +10448,7 @@
 
                             if (isCrit) {
                                 battleLog("KRITISCHER TREFFER! " + dmg + " Schaden! 💥");
-                                spawnBattleEffect("enemy", "💥");
+                                spawnBattleEffect("enemy", "🔥");
                             } else {
                                 battleLog("Angriff! " + dmg + " Schaden!");
                             }
