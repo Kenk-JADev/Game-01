@@ -6591,7 +6591,7 @@
 
         .contract-paper {
             width: min(560px, 92vw);
-            max-height: calc(100vh - 250px);
+            max-height: calc(100vh - 300px);
             overflow: auto;
             padding: 16px 18px;
             background: linear-gradient(180deg, #f8f4e8 0%, #f0ebe0 50%, #e8e2d5 100%);
@@ -7962,6 +7962,9 @@
                         playerEl.classList.remove("walking");
                         playerEl.style.transition = "";
                         checkNearbyInteractables();
+                        if (gameState === "MAP") {
+                            processHeldKeys();
+                        }
                     }, MOVE_DURATION);
 
                     return true;
@@ -8098,12 +8101,23 @@
                     parseEmojis(doorLayer);
                 }
 
-                function canAccessBoss() {
-                    const flurEnemies = MAPS.flur?.npcs?.filter(n => n.type === "enemy" && !n.isBoss) || [];
-                    return flurEnemies.every(npc => {
-                        const key = `flur_${npc.x}_${npc.y}_${npc.enemyId}`;
-                        return defeatedEnemies.has(key);
+                function getBossGateEnemies() {
+                    return Object.entries(MAPS).flatMap(([mapId, map]) => {
+                        return (map.npcs || [])
+                            .filter(n => n.type === "enemy" && !n.isBoss)
+                            .map(n => ({ mapId, x: n.x, y: n.y, enemyId: n.enemyId }));
                     });
+                }
+
+                function getRemainingBossEnemies() {
+                    return getBossGateEnemies().filter(n => {
+                        const key = `${n.mapId}_${n.x}_${n.y}_${n.enemyId}`;
+                        return !defeatedEnemies.has(key);
+                    }).length;
+                }
+
+                function canAccessBoss() {
+                    return getRemainingBossEnemies() === 0;
                 }
 
                 function handleDoor(x, y, tileData) {
@@ -8112,11 +8126,7 @@
                     for (const [doorId, door] of Object.entries(DOORS)) {
                         if (door.from === currentMapId && door.fromX === x && door.fromY === y) {
                             if (door.requiresBossKey && !canAccessBoss()) {
-                                const remaining = (MAPS.flur?.npcs?.filter(n => {
-                                    if (n.type !== "enemy" || n.isBoss) return false;
-                                    const key = `flur_${n.x}_${n.y}_${n.enemyId}`;
-                                    return !defeatedEnemies.has(key);
-                                }) || []).length;
+                                const remaining = getRemainingBossEnemies();
                                 showMessage(`Die Tür ist verschlossen! Besiege noch ${remaining} Gegner.`, "🚪 Tür", "🚪");
                                 return;
                             }
@@ -8368,6 +8378,7 @@
                     // Reset UI
                     if (msgBox) msgBox.classList.remove("visible");
                     if (interactionHint) interactionHint.classList.remove("visible");
+                    closeQuitOptions();
                     document.getElementById("victory-screen")?.classList.remove("visible");
                     document.getElementById("defeat-screen")?.classList.remove("visible");
                     document.getElementById("battle-item-menu")?.classList.remove("visible");
