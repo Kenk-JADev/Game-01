@@ -170,9 +170,12 @@
                     </div>
                     <div class="changelog-body">
                         <div class="changelog-version">
-                            <h3>Version 4.0.2 - Save/Load Fix</h3>
-                            <div class="changelog-date">Februar 2026</div>
+                            <h3>Version 4.0.2 - Bugfixing</h3>
+                            <div class="changelog-date">16 - 18 Februar 2026</div>
                             <ul>
+                                <li>🎯 Battle-System 2.0 wurde umgeschrieben</li>
+                                <li>✨ Neue Maps wurden eingebaut</li>
+                                <li>✨ Mehere Dialogs wurden eingebaut</li>
                                 <li>🐛 Speichersystem komplett überarbeitet: Name, Geschlecht, Items, Abteilung und Ort
                                     werden nun korrekt gespeichert</li>
                                 <li>🐛 Laden-Funktion verbessert: Alle Spieler-Daten (Name, Sprite, Gender, Department)
@@ -182,13 +185,13 @@
                                 <li>🐛 Speicherdaten enthalten jetzt gender und dept direkt im player-Objekt</li>
                                 <li>🐛 UI-Elemente (HUD, Menü, Battle-Screen) zeigen nach dem Laden die korrekten Werte
                                     an</li>
-                                <li>💾 "Neues Spiel" überschreibt bestehende Saves nicht mehr vor Vertragsunterzeichnung
+                                <li>💾 "Neues Spiel" überschreibt bestehende Saves nicht mehr vor Vertragsunterzeichnung</li>
                                 </li>
                             </ul>
                         </div>
                         <div class="changelog-version">
-                            <h3>Version 4.0 - Ultimate Edition</h3>
-                            <div class="changelog-date">Februar 2026</div>
+                            <h3>Version 4.0 Ultimate Edition</h3>
+                            <div class="changelog-date">1 - 13 Februar 2026</div>
                             <ul>
                                 <li>✨ Titlemenü implementiert (Neues Spiel / Fortfahren)</li>
                                 <li>💾 Savefile-System mit localStorage</li>
@@ -202,14 +205,15 @@
                                 <li>🐛 Badge-Details (Auszubildende/r, Abteilung) werden erst beim Unterschreiben
                                     angezeigt</li>
                                 <li>🐛 Spacing-Bug bei "Abteilung: Einkauf" behoben</li>
-                                <li>✨ Scrollverhalten im Arbeitsvertrag optimiert</li>
+                                <li>🐛 Scrollverhalten im Arbeitsvertrag optimiert</li>
                                 <li>🐛 Vertragsbutton wird beim Neustarten des Spiels reaktiviert</li>
                             </ul>
                         </div>
                         <div class="changelog-version">
                             <h3>Version 3.5</h3>
-                            <div class="changelog-date">Januar 2026</div>
+                            <div class="changelog-date">16 - 30.Januar 2026</div>
                             <ul>
+                                <li>✨ Changelog wurde hinzugefügt</li>
                                 <li>🎯 Battle-System überarbeitet</li>
                                 <li>📊 Enemy-Management verbessert</li>
                                 <li>💬 Dialogue-System erweitert</li>
@@ -7167,7 +7171,7 @@
                     const imgHost = document.getElementById("zuef-image-host");
                     if (imgHost && !imgHost.hasChildNodes()) {
                         const img = document.createElement("img");
-                        img.src = "http://webshops.zuef.de/DE01BVG/media/71/pagebuilder/Karneval+Angebot+2026.png?size=256";
+                        img.src = "http://webshops.zuef.de/DE01BVG/media/71/pagebuilder/Karneval+Angebot+2026.png?size=512";
                         img.alt = "Flyer";
                         img.className = "zuef-promo-img";
                         imgHost.appendChild(img);
@@ -7991,12 +7995,8 @@
                     // Professional direction system - only LEFT/RIGHT rotations
                     if (dx < 0) {
                         player.facing = "left";
-                        playerEl.classList.remove("face-right");
-                        playerEl.classList.add("face-left");
                     } else if (dx > 0) {
                         player.facing = "right";
-                        playerEl.classList.remove("face-left");
-                        playerEl.classList.add("face-right");
                     }
                     // Vertical movement does NOT change player direction
 
@@ -9493,10 +9493,10 @@
                     ];
                     
                     secretSpots.forEach(spot => {
-                        if (player.x === spot.x && player.y === spot.y && Math.random() < 0.2) {
+                        if (player.x === spot.x && player.y === spot.y && Math.random() < 0.25) {
+                            addItemToInventory("geheimes_dokument", 1);
                             showMessage(`Du findest etwas! Es ist Andreas' geheimes Dokument! 📄`, "💡 Entdeckung", "🔍");
                             queueMessage("Das muss zu Andreas! Beeile dich zurück.", "💡 Entdeckung", "🔍", () => {
-                                addItemToInventory("geheimes_dokument", 1);
                             });
                         }
                     });
